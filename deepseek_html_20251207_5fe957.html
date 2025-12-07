@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Personalized Supplement Demo</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+    .card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    }
+    h2 {
+      color: #333;
+      margin-top: 0;
+      font-weight: 600;
+    }
+    label {
+      display: block;
+      margin: 20px 0 8px;
+      color: #555;
+      font-weight: 500;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e1e5e9;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    button {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 30px;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+    }
+    .success {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    .checkmark {
+      font-size: 60px;
+      color: #4CAF50;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div id="formSection">
+        <h2>🎯 Investor Demo: Personalized Supplement Assessment</h2>
+        
+        <form id="demoForm">
+          <label>Full Name:</label>
+          <input type="text" name="name" placeholder="John Investor" required>
+          
+          <label>Email Address:</label>
+          <input type="email" name="email" placeholder="john@investmentfirm.com" required>
+          
+          <label>Primary Health Goal:</label>
+          <select name="health_goals">
+            <option value="energy">More Energy & Vitality</option>
+            <option value="focus">Improved Focus & Clarity</option>
+            <option value="sleep">Better Sleep Quality</option>
+            <option value="stress">Stress Reduction</option>
+            <option value="recovery">Faster Recovery</option>
+          </select>
+          
+          <label>Current Stress Level:</label>
+          <select name="stress_level">
+            <option value="low">Low (Relaxed)</option>
+            <option value="medium" selected>Medium (Normal)</option>
+            <option value="high">High (Frequent Stress)</option>
+          </select>
+          
+          <label>Sleep Quality:</label>
+          <select name="sleep_quality">
+            <option value="excellent">Excellent (7-9 hours, restful)</option>
+            <option value="good">Good (6-7 hours)</option>
+            <option value="poor">Poor (<6 hours, restless)</option>
+          </select>
+          
+          <label>Exercise Frequency:</label>
+          <select name="exercise">
+            <option value="daily">Daily or Almost Daily</option>
+            <option value="weekly">3-5 Times/Week</option>
+            <option value="occasional">1-2 Times/Week</option>
+            <option value="none">Rarely or Never</option>
+          </select>
+          
+          <label>Any Additional Notes:</label>
+          <textarea name="notes" rows="3" placeholder="Tell us more about your health goals..."></textarea>
+          
+          <button type="submit">
+            🚀 Get My Personalized Supplement Plan
+          </button>
+        </form>
+      </div>
+      
+      <div id="successSection" class="success">
+        <div class="checkmark">✅</div>
+        <h2>Success!</h2>
+        <p><strong>Your profile has been submitted for analysis.</strong></p>
+        <p>Our AI-powered system is now calculating your personalized supplement regimen.</p>
+        <p>Results will include:</p>
+        <ul style="text-align: left; margin: 20px 0;">
+          <li>Custom supplement stack</li>
+          <li>Personalized dosing schedule</li>
+          <li>Timing recommendations (AM/PM)</li>
+          <li>Expected benefits timeline</li>
+        </ul>
+        <p><em>Check your email for results within 24 hours.</em></p>
+        <button onclick="resetForm()">← Submit Another Demo</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Replace with YOUR Apps Script URL
+    const APPS_SCRIPT_URL = 'PASTE_YOUR_APPS_SCRIPT_URL_HERE';
+    
+    document.getElementById('demoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      
+      // Show loading state
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '⚡ Processing...';
+      submitBtn.disabled = true;
+      
+      try {
+        // Submit to Google Apps Script
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors', // Important for demo to avoid CORS issues
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          body: new URLSearchParams(data)
+        });
+        
+        // For demo purposes, we'll assume success
+        // (In production, you'd parse the actual response)
+        setTimeout(() => {
+          document.getElementById('formSection').style.display = 'none';
+          document.getElementById('successSection').style.display = 'block';
+        }, 1500);
+        
+      } catch (error) {
+        // Even if there's an error, show success for demo purposes
+        setTimeout(() => {
+          document.getElementById('formSection').style.display = 'none';
+          document.getElementById('successSection').style.display = 'block';
+        }, 1500);
+      }
+    });
+    
+    function resetForm() {
+      document.getElementById('formSection').style.display = 'block';
+      document.getElementById('successSection').style.display = 'none';
+      document.getElementById('demoForm').reset();
+    }
+    
+    // If no Apps Script URL is set, use a simulated submission
+    if (APPS_SCRIPT_URL.includes('PASTE_YOUR')) {
+      document.querySelector('button[type="submit"]').addEventListener('click', (e) => {
+        if (APPS_SCRIPT_URL.includes('PASTE_YOUR')) {
+          e.preventDefault();
+          setTimeout(() => {
+            document.getElementById('formSection').style.display = 'none';
+            document.getElementById('successSection').style.display = 'block';
+          }, 1500);
+        }
+      });
+    }
+  </script>
+</body>
+</html>
