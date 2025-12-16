@@ -1,0 +1,24 @@
+id,text,type,options,branching_if,branching_then
+name,What is your full name?,text,,,
+email,What is your email address?,email,,,
+goals,What is your primary health goal?,single_choice,More Energy;Better Sleep;Stress Relief;Weight Loss;Longevity,,
+Q-001,What is your age?,single_numeric,,,age_bucket
+Q-002,What is your biological sex?,single_choice,Male;Female;Other,,expose_gender_specific
+Q-003,Do you currently smoke cigarettes or use tobacco?,single_choice,Never;Former;Current,,"if=""Current"" then=""Q-004"""
+Q-004,How many cigarettes per day do you smoke?,single_numeric,,"if=""Q-003=Current""",
+Q-005,How often do you consume alcoholic beverages?,single_choice,Never;Occasionally;Weekly;Daily,,
+Q-006,How many hours of sleep do you usually get per night?,single_numeric,,,
+Q-007,How would you rate your typical stress level?,single_choice,Low;Moderate;High,,
+Q-008,How many minutes of moderate or vigorous activity do you do weekly?,single_numeric,,,
+Q-009,Has any parent or sibling been diagnosed with heart disease before age 55 (men) / 65 (women)?,yes_no,Yes;No,,
+Q-010,"Have you been diagnosed with high blood pressure, diabetes, or high cholesterol?",multi_select,Hypertension;Diabetes;High cholesterol;None,,branch_to_followup
+Q-011,For women only: have you ever used hormone replacement therapy?,single_choice,Yes;No,"if=""sex=Female""",
+Q-012,For men only: have you noticed erectile difficulties?,single_choice,Yes;No,"if=""sex=Male""",
+Q-013,Do you have any known food allergies or intolerances?,multi_select,Gluten;Lactose;Nuts;Shellfish;Other,,
+Q-014,"In the past year, have you unintentionally lost more than 5 kg?",yes_no,Yes;No,,
+Q-015,Do you often feel short of breath on mild exertion?,yes_no,Yes;No,,
+Q-016,Have you ever been told you have fatty liver disease or abnormal liver tests?,yes_no,Yes;No,,
+Q-017,Do you have a family history of any of the following cancers?,multi_select,Breast;Ovarian;Colorectal;Prostate;Other,,
+Q-018,"Do you have known genetic results (e.g., BRCA, APOE, FH)?",yes_no,Yes;No,,open_consent_genetic
+Q-019,Enter your most recent blood pressure reading if known,single_numeric,,,
+Q-020,Enter your most recent fasting glucose (mg/dL or mmol/L) if known,single_numeric,,,
