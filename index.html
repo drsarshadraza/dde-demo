@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Phytomedix Digital Biological Twin</title>
   <style>
-    /* DDE v7.0Gem Styling Standard */
     :root {
-      --primary-color: #2e7d32; /* Deep Green */
-      --accent-color: #c6a700;  /* Gold */
+      --primary-color: #2e7d32;
+      --accent-color: #c6a700;
       --bg-color: #f4f7f6;
       --card-bg: #ffffff;
       --text-color: #333;
     }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-color);
@@ -23,21 +23,84 @@
       justify-content: center;
       min-height: 100vh;
     }
-    .container { width: 100%; max-width: 700px; margin-top: 20px; }
+
+    .container {
+      width: 100%;
+      max-width: 700px;
+      margin-top: 20px;
+    }
+
     .header { text-align: center; margin-bottom: 30px; }
     .logo-text { color: var(--primary-color); font-size: 28px; font-weight: 800; margin: 0; }
     .tagline { color: var(--accent-color); font-size: 14px; font-weight: 600; text-transform: uppercase; margin-top: 5px; }
-    .card { background: var(--card-bg); border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-top: 5px solid var(--primary-color); }
-    .question-group { margin-bottom: 25px; padding: 20px; background: #fff; border: 1px solid #eee; border-radius: 12px; transition: all 0.3s ease; }
-    .question-label { display: block; font-weight: 700; margin-bottom: 15px; color: #2c3e50; font-size: 18px; }
-    input[type="number"], select { width: 100%; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; box-sizing: border-box; }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border-top: 5px solid var(--primary-color);
+    }
+
+    .question-group {
+      margin-bottom: 25px;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+    }
+    .question-group:hover {
+      border-color: #ddd;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .question-label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 15px;
+      color: #2c3e50;
+      font-size: 18px;
+    }
+
+    input[type="number"], input[type="text"], input[type="email"], select {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
     .options-grid { display: flex; flex-direction: column; gap: 10px; }
-    .option-label { display: flex; align-items: center; padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .option-label {
+      display: flex; align-items: center; padding: 12px;
+      border: 2px solid #e0e0e0; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s;
+    }
     .option-label:hover { background-color: #f9f9f9; }
-    .option-label:has(input:checked) { border-color: var(--primary-color); background-color: #e8f5e9; color: var(--primary-color); font-weight: 600; }
-    input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); accent-color: var(--primary-color); }
-    .submit-btn { background: linear-gradient(135deg, var(--primary-color) 0%, #1b5e20 100%); color: white; border: none; padding: 18px; border-radius: 8px; font-size: 18px; font-weight: 700; cursor: pointer; width: 100%; margin-top: 20px; transition: transform 0.2s; }
+    .option-label:has(input:checked) {
+      border-color: var(--primary-color);
+      background-color: #e8f5e9;
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    input[type="radio"], input[type="checkbox"] {
+      margin-right: 12px; transform: scale(1.2); accent-color: var(--primary-color);
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--primary-color) 0%, #1b5e20 100%);
+      color: white; border: none; padding: 18px;
+      border-radius: 8px; font-size: 18px; font-weight: 700;
+      cursor: pointer; width: 100%; margin-top: 20px;
+      transition: transform 0.2s;
+    }
     .submit-btn:hover { transform: translateY(-2px); }
+
     #loading { text-align: center; padding: 40px; color: #666; }
     .success-message { display: none; text-align: center; padding: 40px; }
     .checkmark { font-size: 60px; margin-bottom: 20px; }
@@ -48,13 +111,13 @@
 <div class="container">
   <div class="header">
     <h1 class="logo-text">PHYTOMEDIX AI</h1>
-    <div class="tagline">Digital Biological Twin Engine v7.0</div>
+    <div class="tagline">Digital Biological Twin Engine v7.1</div>
   </div>
 
   <div class="card">
     <div id="loading">
       <h3>Connecting to Question Bank...</h3>
-      <p>Loading diagnostics_qbank_v1.0.csv</p>
+      <p>Loading diagnostics_qbank_v2.0.csv</p>
     </div>
 
     <form id="dynamic-form" style="display: none;">
@@ -65,17 +128,19 @@
     <div id="success-section" class="success-message">
       <div class="checkmark">🧬</div>
       <h2>Digital Twin Activated</h2>
-      <p>Your biological data has been securely ingested.</p>
-      <p>The <strong>Dynamic Dosage Engine (DDE)</strong> is now running simulations to calculate your ED50/ED100 precision dosage.</p>
+      <p>Your biological data has been successfully ingested.</p>
+      <p>The <strong>Dynamic Dosage Engine (DDE)</strong> is now running simulations.</p>
       <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; cursor:pointer;">Start New Simulation</button>
     </div>
   </div>
 </div>
 
 <script>
-  // --- DDE v7.0 CONFIGURATION ---
-  const CSV_FILE = 'diagnostics_qbank_v1.0.csv'; 
-  // *** ACTION REQUIRED: PASTE YOUR DEPLOYED WEB APP URL BELOW ***
+  // --- CONFIGURATION ---
+  // Ensure this matches the CSV filename you saved
+  const CSV_FILE = 'diagnostics_qbank_v2.0.csv'; 
+  
+  // *** PASTE YOUR APPS SCRIPT URL HERE ***
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxvbV50_KgOZ8GTyJv0mAhc7cR3C3JNsvo-Kchx2vt-IOQ7RN1z6vyF-5apY-QHlKliHQ/exec';
 
   let questionData = [];
@@ -92,7 +157,7 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('dynamic-form').style.display = 'block';
     } catch (err) {
-      document.getElementById('loading').innerHTML = `<p style="color:red">Error: Could not load ${CSV_FILE}.<br>Please ensure the CSV file is in the GitHub folder.</p>`;
+      document.getElementById('loading').innerHTML = `<p style="color:red">Error: Could not load ${CSV_FILE}.<br>Please ensure the CSV file is uploaded to GitHub.</p>`;
     }
   }
 
@@ -101,6 +166,8 @@
     const headers = lines[0].split(',').map(h => h.trim());
     const result = [];
     for (let i = 1; i < lines.length; i++) {
+      if (!lines[i].trim()) continue;
+      // Regex to handle commas inside quotes
       const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
       const matches = lines[i].match(regex) || [];
       if (matches.length > 0) {
@@ -119,6 +186,7 @@
   function renderForm(questions) {
     const container = document.getElementById('questions-container');
     container.innerHTML = '';
+
     questions.forEach(q => {
       const wrapper = document.createElement('div');
       wrapper.className = 'question-group';
@@ -131,18 +199,30 @@
       wrapper.appendChild(label);
 
       let inputHtml = '';
-      if (q.type === 'single_numeric') {
+      
+      // LOGIC UPGRADE: Handles Text and Email inputs for Name/Email
+      if (q.type === 'text' || q.type === 'email') {
+        inputHtml = `<input type="${q.type}" name="${q.id}" placeholder="Enter answer..." required>`;
+        wrapper.innerHTML += inputHtml;
+      }
+      else if (q.type === 'single_numeric') {
         inputHtml = `<input type="number" name="${q.id}" placeholder="Enter value..." oninput="checkBranching()">`;
         wrapper.innerHTML += inputHtml;
       } 
-      else if (q.type === 'single_choice' || q.type === 'multi_select') {
+      else if (q.type === 'single_choice' || q.type === 'multi_select' || q.type === 'yes_no') {
         const options = q.options ? q.options.split(';') : [];
-        const inputType = q.type === 'single_choice' ? 'radio' : 'checkbox';
+        const inputType = (q.type === 'multi_select') ? 'checkbox' : 'radio';
+        
         const optContainer = document.createElement('div');
         optContainer.className = 'options-grid';
+        
         options.forEach(opt => {
           const cleanOpt = opt.trim();
-          optContainer.innerHTML += `<label class="option-label"><input type="${inputType}" name="${q.id}" value="${cleanOpt}" onchange="checkBranching()"> ${cleanOpt}</label>`;
+          optContainer.innerHTML += `
+            <label class="option-label">
+              <input type="${inputType}" name="${q.id}" value="${cleanOpt}" onchange="checkBranching()"> 
+              ${cleanOpt}
+            </label>`;
         });
         wrapper.appendChild(optContainer);
       }
@@ -162,12 +242,14 @@
           const targetId = parts[0].trim();
           const targetValue = parts[1].trim();
           const selected = document.querySelector(`input[name="${targetId}"]:checked`);
+          
           if (selected && selected.value === targetValue) {
             wrapper.style.display = 'block'; 
           } else {
             wrapper.style.display = 'none';  
+            // Clear inputs when hidden
             wrapper.querySelectorAll('input').forEach(i => {
-                if(i.type==='number') i.value = '';
+                if(i.type==='number' || i.type==='text' || i.type==='email') i.value = '';
                 if(i.type==='radio' || i.type==='checkbox') i.checked = false;
             });
           }
@@ -185,6 +267,8 @@
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+    
+    // Add Timestamp
     data.submission_timestamp = new Date().toISOString();
 
     try {
@@ -194,13 +278,15 @@
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: new URLSearchParams(data)
         });
+
         setTimeout(() => {
           document.getElementById('dynamic-form').style.display = 'none';
           document.getElementById('success-section').style.display = 'block';
         }, 1500);
+
     } catch (error) {
         console.error("Connection Error:", error);
-        alert("Error connecting to DDE Backend. Please check internet connection.");
+        alert("Error connecting to DDE. Check internet.");
         btn.innerHTML = originalText;
         btn.disabled = false;
     }
