@@ -111,13 +111,13 @@
 <div class="container">
   <div class="header">
     <h1 class="logo-text">PHYTOMEDIX AI</h1>
-    <div class="tagline">Digital Biological Twin Engine v7.1</div>
+    <div class="tagline">Digital Biological Twin Engine v8.0</div>
   </div>
 
   <div class="card">
     <div id="loading">
       <h3>Connecting to Question Bank...</h3>
-      <p>Loading diagnostics_qbank_v2.0.csv</p>
+      <p>Loading diagnostics_qbank_v3.0.csv</p>
     </div>
 
     <form id="dynamic-form" style="display: none;">
@@ -129,7 +129,7 @@
       <div class="checkmark">🧬</div>
       <h2>Digital Twin Activated</h2>
       <p>Your biological data has been successfully ingested.</p>
-      <p>The <strong>Dynamic Dosage Engine (DDE)</strong> is now running simulations.</p>
+      <p>The <strong>Clinical Intelligence Engine</strong> is analyzing your profile.</p>
       <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; cursor:pointer;">Start New Simulation</button>
     </div>
   </div>
@@ -137,11 +137,11 @@
 
 <script>
   // --- CONFIGURATION ---
-  // Ensure this matches the CSV filename you saved
-  const CSV_FILE = 'diagnostics_qbank_v2.0.csv'; 
+  // UPDATED TO v3.0 CSV
+  const CSV_FILE = 'diagnostics_qbank_v3.0.csv'; 
   
   // *** PASTE YOUR APPS SCRIPT URL HERE ***
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyn1qBfivtL_iJ98Wxj8f1mIELTFg66p-zQ1Lz-xTSHaf5pdfqRnT4B23pliDwkHzZu/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkYVGNSv2XdPLPynGaTBW4yyUNIU9Htf-KlSITDv4kZWTPC7BmPbGK_4YsCKO1mMSl/exec';
 
   let questionData = [];
 
@@ -200,7 +200,7 @@
 
       let inputHtml = '';
       
-      // LOGIC UPGRADE: Handles Text and Email inputs for Name/Email
+      // LOGIC: Handles Text and Email inputs for Name/Email
       if (q.type === 'text' || q.type === 'email') {
         inputHtml = `<input type="${q.type}" name="${q.id}" placeholder="Enter answer..." required>`;
         wrapper.innerHTML += inputHtml;
@@ -247,7 +247,6 @@
             wrapper.style.display = 'block'; 
           } else {
             wrapper.style.display = 'none';  
-            // Clear inputs when hidden
             wrapper.querySelectorAll('input').forEach(i => {
                 if(i.type==='number' || i.type==='text' || i.type==='email') i.value = '';
                 if(i.type==='radio' || i.type==='checkbox') i.checked = false;
