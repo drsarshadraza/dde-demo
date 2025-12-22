@@ -145,7 +145,32 @@
 
   let questionData = [];
 
-  document.addEventListener('DOMContentLoaded', () => { fetchCSV(); });
+  document.addEventListener('DOMContentLoaded', () => { fetchCSV(); }); // --- NEW CODE: AUTO-DETECT USER FROM APPSHEET ---
+document.addEventListener('DOMContentLoaded', () => {
+    fetchCSV(); // Your existing function
+
+    // Check if AppSheet sent an email
+    const urlParams = new URLSearchParams(window.location.search);
+    const appSheetEmail = urlParams.get('email');
+    const appSheetName = urlParams.get('name');
+
+    if (appSheetEmail) {
+        // Wait for form to render, then fill hidden fields
+        setTimeout(() => {
+            const emailInput = document.querySelector('input[name="email"]');
+            const nameInput = document.querySelector('input[name="name"]');
+            
+            if (emailInput) {
+                emailInput.value = appSheetEmail;
+                emailInput.readOnly = true; // Lock it so they can't change it
+                emailInput.style.backgroundColor = "#e0e0e0";
+            }
+            if (nameInput && appSheetName) {
+                nameInput.value = appSheetName;
+            }
+        }, 1000); // 1 second delay to ensure questions are loaded
+    }
+});
 
   async function fetchCSV() {
     try {
