@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phytomedix Digital Biological Twin</title>
+  <title>Phytomedix | Clinical Twin Engine</title>
   <style>
     :root {
-      --primary-color: #2e7d32;
-      --accent-color: #c6a700;
-      --bg-color: #f4f7f6;
-      --card-bg: #ffffff;
-      --text-color: #333;
+      --primary: #1b5e20;
+      --secondary: #4caf50;
+      --bg: #f8f9fa;
+      --surface: #ffffff;
+      --text: #2c3e50;
+      --border: #e0e0e0;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       margin: 0;
-      padding: 20px;
+      padding: 0;
       display: flex;
       justify-content: center;
       min-height: 100vh;
@@ -26,304 +27,312 @@
 
     .container {
       width: 100%;
-      max-width: 700px;
-      margin-top: 20px;
+      max-width: 650px;
+      margin: 40px 20px;
     }
 
+    /* HEADER */
     .header { text-align: center; margin-bottom: 30px; }
-    .logo-text { color: var(--primary-color); font-size: 28px; font-weight: 800; margin: 0; }
-    .tagline { color: var(--accent-color); font-size: 14px; font-weight: 600; text-transform: uppercase; margin-top: 5px; }
+    .logo { color: var(--primary); font-size: 24px; font-weight: 900; letter-spacing: -1px; margin: 0; }
+    .badge { 
+      background: #e8f5e9; color: var(--primary); 
+      font-size: 11px; font-weight: 700; 
+      padding: 4px 8px; border-radius: 4px; 
+      text-transform: uppercase; letter-spacing: 1px;
+    }
 
+    /* CARD */
     .card {
-      background: var(--card-bg);
-      border-radius: 16px;
-      padding: 40px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-      border-top: 5px solid var(--primary-color);
-    }
-
-    .question-group {
-      margin-bottom: 25px;
-      padding: 20px;
-      background: #fff;
-      border: 1px solid #eee;
+      background: var(--surface);
       border-radius: 12px;
-      transition: all 0.3s ease;
-    }
-    .question-group:hover {
-      border-color: #ddd;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-    .question-label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 15px;
-      color: #2c3e50;
-      font-size: 18px;
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.05);
     }
 
-    input[type="number"], input[type="text"], input[type="email"], select {
+    /* QUESTIONS */
+    .question-group {
+      margin-bottom: 30px;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .q-label {
+      display: block;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 15px;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    /* INPUTS */
+    input[type="text"], input[type="email"], input[type="number"] {
       width: 100%;
-      padding: 12px;
-      border: 2px solid #e0e0e0;
+      padding: 14px;
+      border: 2px solid var(--border);
       border-radius: 8px;
       font-size: 16px;
-      box-sizing: border-box;
+      transition: 0.2s;
+      box-sizing: border-box; /* Fixes width issues */
     }
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary-color);
+    input:focus { border-color: var(--primary); outline: none; }
+
+    /* OPTIONS GRID */
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
     }
 
-    .options-grid { display: flex; flex-direction: column; gap: 10px; }
-    .option-label {
-      display: flex; align-items: center; padding: 12px;
-      border: 2px solid #e0e0e0; border-radius: 8px;
-      cursor: pointer; transition: all 0.2s;
+    .option-card {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #fff;
     }
-    .option-label:hover { background-color: #f9f9f9; }
-    .option-label:has(input:checked) {
-      border-color: var(--primary-color);
+    .option-card:hover { border-color: #b0bec5; background: #fafafa; }
+    
+    /* SELECTED STATE */
+    .option-card:has(input:checked) {
+      border-color: var(--primary);
       background-color: #e8f5e9;
-      color: var(--primary-color);
+      color: var(--primary);
       font-weight: 600;
     }
+
     input[type="radio"], input[type="checkbox"] {
-      margin-right: 12px; transform: scale(1.2); accent-color: var(--primary-color);
+      margin-right: 12px;
+      transform: scale(1.2);
+      accent-color: var(--primary);
     }
 
+    /* BUTTON */
     .submit-btn {
-      background: linear-gradient(135deg, var(--primary-color) 0%, #1b5e20 100%);
-      color: white; border: none; padding: 18px;
-      border-radius: 8px; font-size: 18px; font-weight: 700;
-      cursor: pointer; width: 100%; margin-top: 20px;
-      transition: transform 0.2s;
+      width: 100%;
+      padding: 16px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(27, 94, 32, 0.2);
+      transition: 0.2s;
     }
-    .submit-btn:hover { transform: translateY(-2px); }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(27, 94, 32, 0.3); }
+    .submit-btn:disabled { background: #9e9e9e; cursor: not-allowed; transform: none; }
 
-    #loading { text-align: center; padding: 40px; color: #666; }
-    .success-message { display: none; text-align: center; padding: 40px; }
-    .checkmark { font-size: 60px; margin-bottom: 20px; }
+    /* SUCCESS STATE */
+    .success-box {
+      display: none; text-align: center; padding: 20px;
+    }
+    .icon-pulse { font-size: 50px; display: block; margin-bottom: 20px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
   </style>
 </head>
 <body>
 
 <div class="container">
   <div class="header">
-    <h1 class="logo-text">PHYTOMEDIX AI</h1>
-    <div class="tagline">Digital Biological Twin Engine v9.0</div>
+    <h1 class="logo">PHYTOMEDIX AI</h1>
+    <span class="badge">Digital Twin v10.0</span>
   </div>
 
   <div class="card">
-    <div id="loading">
-      <h3>Initializing Clinical Engine...</h3>
-      <p>Loading diagnostics_qbank_v4.0.csv</p>
-    </div>
-
-    <form id="dynamic-form" style="display: none;">
-      <div id="questions-container"></div>
-      <button type="submit" class="submit-btn">Generate Biological Protocol</button>
+    
+    <form id="clinical-form">
+      <div id="form-content"></div> <button type="submit" class="submit-btn">Run Clinical Analysis</button>
     </form>
 
-    <div id="success-section" class="success-message">
-      <div class="checkmark">🧬</div>
-      <h2>Digital Twin Activated</h2>
-      <p>Your clinical profile has been successfully ingested.</p>
-      <p>The <strong>Metabolic Intelligence Engine</strong> is calculating your risk scores.</p>
-      <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; cursor:pointer;">Start New Simulation</button>
+    <div id="success-view" class="success-box">
+      <div class="icon-pulse">🧬</div>
+      <h2>Analysis Complete</h2>
+      <p style="color:#666; margin-bottom: 30px;">Your biological data has been mapped to the Clinical Engine.</p>
+      <button onclick="location.reload()" style="padding:10px 20px; cursor:pointer; background:none; border:1px solid #ccc; border-radius:4px;">Start New Session</button>
     </div>
+
   </div>
 </div>
 
 <script>
-  // --- CONFIGURATION ---
-  // UPDATED TO v4.0 CSV (The new clinical schema)
-  const CSV_FILE = 'diagnostics_qbank_v4.0.csv'; 
-  
-  // *** PASTE YOUR APPS SCRIPT URL HERE ***
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyp5XaVhE9TY-FkufqfXPDkiL0davPoz4_96EpYUlzyPnMvhKq8TzO6wXyf-5RUgsCKtA/exec';
+  // --- 1. CONFIGURATION ---
+  // Connects to your Google Apps Script
+  const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbxkYVGNSv2XdPLPynGaTBW4yyUNIU9Htf-KlSITDv4kZWTPC7BmPbGK_4YsCKO1mMSl/exec';
 
-  let questionData = [];
+  // --- 2. EMBEDDED QUESTION BANK (No CSV Required) ---
+  // This guarantees perfect text rendering every time.
+  const QUESTIONS = [
+    { id: 'name', text: 'Full Name', type: 'text' },
+    { id: 'email', text: 'Email Address', type: 'email' },
+    
+    { id: 'Q-001', text: 'What is your age?', type: 'single_numeric' },
+    { id: 'Q-002', text: 'Biological Sex', type: 'single_choice', options: ['Male', 'Female'] },
+    
+    // CARDIOVASCULAR
+    { id: 'Q-003', text: 'Do you currently smoke cigarettes or use tobacco?', type: 'single_choice', options: ['Never', 'Former', 'Current'] },
+    { id: 'Q-004', text: 'How many cigarettes per day?', type: 'single_numeric', condition: { if: 'Q-003', equals: 'Current' } },
+    
+    { id: 'Q-019', text: 'Enter your last known Systolic BP (Top number)', type: 'single_numeric' },
+    { id: 'Q-015', text: 'CRITICAL: Do you feel short of breath on mild exertion?', type: 'yes_no', options: ['Yes', 'No'] },
+    { id: 'Q-009', text: 'Family History: Heart Attack before age 55?', type: 'yes_no', options: ['Yes', 'No'] },
 
-  // --- AUTO-DETECT USER FROM APPSHEET ---
+    // METABOLIC
+    { id: 'Q-021', text: 'Current Weight (kg)', type: 'single_numeric' },
+    { id: 'Q-022', text: 'Current Height (cm)', type: 'single_numeric' },
+    { id: 'Q-010', text: 'Have you been diagnosed with any of the following?', type: 'multi_select', options: ['Hypertension', 'Diabetes Type 2', 'High Cholesterol', 'None'] },
+    { id: 'Q-020', text: 'Fasting Glucose (mg/dL) - Leave blank if unknown', type: 'single_numeric' },
+    
+    // LIFESTYLE & ONCOLOGY
+    { id: 'Q-005', text: 'Alcohol Consumption Frequency', type: 'single_choice', options: ['Never', 'Monthly', 'Weekly', 'Daily'] },
+    { id: 'Q-006', text: 'Average Sleep per Night (Hours)', type: 'single_numeric' },
+    { id: 'Q-014', text: 'Unexplained Weight Loss (>5kg) recently?', type: 'yes_no', options: ['Yes', 'No'] },
+    { id: 'Q-017', text: 'Family History of Cancer?', type: 'multi_select', options: ['Breast', 'Colon', 'Prostate', 'None'] }
+  ];
+
+  // --- 3. RENDERING ENGINE ---
   document.addEventListener('DOMContentLoaded', () => {
-    fetchCSV(); 
-
-    // Check if AppSheet sent an email/name via URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const appSheetEmail = urlParams.get('email');
-    const appSheetName = urlParams.get('name');
-
-    if (appSheetEmail) {
-        // Wait for form to render, then fill hidden fields
-        setTimeout(() => {
-            const emailInput = document.querySelector('input[name="email"]');
-            const nameInput = document.querySelector('input[name="name"]');
-            
-            if (emailInput) {
-                emailInput.value = appSheetEmail;
-                emailInput.readOnly = true; 
-                emailInput.style.backgroundColor = "#e0e0e0";
-            }
-            if (nameInput && appSheetName) {
-                nameInput.value = appSheetName;
-            }
-        }, 1500); // Increased delay slightly to ensure V4 csv loads
-    }
+    renderForm();
+    prefillFromAppSheet();
   });
 
-  async function fetchCSV() {
-    try {
-      const response = await fetch(CSV_FILE);
-      if (!response.ok) throw new Error("CSV file not found");
-      const text = await response.text();
-      questionData = parseCSV(text);
-      renderForm(questionData);
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('dynamic-form').style.display = 'block';
-    } catch (err) {
-      document.getElementById('loading').innerHTML = `<p style="color:red">Error: Could not load ${CSV_FILE}.<br>Please ensure the CSV file is uploaded to GitHub.</p>`;
-    }
-  }
-
-  function parseCSV(text) {
-    const lines = text.trim().split('\n');
-    const headers = lines[0].split(',').map(h => h.trim());
-    const result = [];
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i].trim()) continue;
-      // Regex to handle commas inside quotes (e.g. "Option A, Option B")
-      const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
-      const matches = lines[i].match(regex) || [];
-      if (matches.length > 0) {
-        let obj = {};
-        headers.forEach((h, index) => {
-          let val = matches[index] || "";
-          val = val.replace(/^"|"$/g, ''); 
-          obj[h] = val;
-        });
-        result.push(obj);
-      }
-    }
-    return result;
-  }
-
-  function renderForm(questions) {
-    const container = document.getElementById('questions-container');
+  function renderForm() {
+    const container = document.getElementById('form-content');
     container.innerHTML = '';
 
-    questions.forEach(q => {
+    QUESTIONS.forEach(q => {
+      // Create Wrapper
       const wrapper = document.createElement('div');
       wrapper.className = 'question-group';
-      wrapper.id = `wrapper-${q.id}`;
-      wrapper.dataset.id = q.id;
+      wrapper.id = `wrap-${q.id}`;
+      wrapper.setAttribute('data-id', q.id);
 
+      // Label
       const label = document.createElement('label');
-      label.className = 'question-label';
+      label.className = 'q-label';
       label.textContent = q.text;
       wrapper.appendChild(label);
 
-      let inputHtml = '';
-      
-      // LOGIC: Handles Text and Email inputs for Name/Email
+      // Input Logic
       if (q.type === 'text' || q.type === 'email') {
-        inputHtml = `<input type="${q.type}" name="${q.id}" placeholder="Enter answer..." required>`;
-        wrapper.innerHTML += inputHtml;
-      }
-      else if (q.type === 'single_numeric') {
-        inputHtml = `<input type="number" name="${q.id}" placeholder="Enter value..." oninput="checkBranching()">`;
-        wrapper.innerHTML += inputHtml;
+        wrapper.innerHTML += `<input type="${q.type}" name="${q.id}" placeholder="Type here..." required>`;
       } 
-      else if (q.type === 'single_choice' || q.type === 'multi_select' || q.type === 'yes_no') {
-        const options = q.options ? q.options.split(';') : [];
-        const inputType = (q.type === 'multi_select') ? 'checkbox' : 'radio';
-        
-        const optContainer = document.createElement('div');
-        optContainer.className = 'options-grid';
-        
-        options.forEach(opt => {
-          const cleanOpt = opt.trim();
-          optContainer.innerHTML += `
-            <label class="option-label">
-              <input type="${inputType}" name="${q.id}" value="${cleanOpt}" onchange="checkBranching()"> 
-              ${cleanOpt}
-            </label>`;
-        });
-        wrapper.appendChild(optContainer);
+      else if (q.type === 'single_numeric') {
+        wrapper.innerHTML += `<input type="number" name="${q.id}" placeholder="0" oninput="checkLogic()">`;
       }
+      else if (q.options) {
+        const grid = document.createElement('div');
+        grid.className = 'options-grid';
+        
+        const inputType = q.type === 'multi_select' ? 'checkbox' : 'radio';
+        
+        q.options.forEach(opt => {
+          const optId = `${q.id}-${opt.replace(/\s+/g, '')}`;
+          grid.innerHTML += `
+            <label class="option-card" for="${optId}">
+              <input type="${inputType}" id="${optId}" name="${q.id}" value="${opt}" onchange="checkLogic()">
+              ${opt}
+            </label>
+          `;
+        });
+        wrapper.appendChild(grid);
+      }
+
       container.appendChild(wrapper);
     });
-    checkBranching();
+
+    checkLogic(); // Initial check to hide conditional fields
   }
 
-  // --- UPDATED BRANCHING LOGIC FOR V4.0 ---
-  function checkBranching() {
-    questionData.forEach(q => {
-      // Check if this question has a condition attached (branching_if)
-      if (q.branching_if && q.branching_if.trim() !== "") {
-        const wrapper = document.getElementById(`wrapper-${q.id}`);
-        if (!wrapper) return;
-
-        // Parse the rule: "if=Q-003=Current"
-        const cleanRule = q.branching_if.replace('if=', '').replace(/"/g, '');
-        const parts = cleanRule.split('=');
-
-        if (parts.length === 2) {
-          const targetId = parts[0].trim(); // e.g., Q-003
-          const targetValue = parts[1].trim(); // e.g., Current
-          
-          // Find the input element for the target question
-          const targetInput = document.querySelector(`input[name="${targetId}"]:checked`);
-          
-          // Check if it matches
-          if (targetInput && targetInput.value === targetValue) {
-            wrapper.style.display = 'block'; 
-          } else {
-            wrapper.style.display = 'none';  
-            // Clear values if hidden so we don't submit ghost data
-            wrapper.querySelectorAll('input').forEach(i => {
-                if(i.type==='number' || i.type==='text' || i.type==='email') i.value = '';
-                if(i.type==='radio' || i.type==='checkbox') i.checked = false;
-            });
-          }
+  // --- 4. LOGIC ENGINE (Branching) ---
+  function checkLogic() {
+    QUESTIONS.forEach(q => {
+      if (q.condition) {
+        const wrapper = document.getElementById(`wrap-${q.id}`);
+        const parentInput = document.querySelector(`input[name="${q.condition.if}"]:checked`);
+        
+        if (parentInput && parentInput.value === q.condition.equals) {
+          wrapper.style.display = 'block';
+        } else {
+          wrapper.style.display = 'none';
+          // Clear hidden values
+          const hiddenInputs = wrapper.querySelectorAll('input');
+          hiddenInputs.forEach(input => {
+            if (input.type === 'text' || input.type === 'number') input.value = '';
+            if (input.type === 'radio' || input.type === 'checkbox') input.checked = false;
+          });
         }
       }
     });
   }
 
-  document.getElementById('dynamic-form').addEventListener('submit', async (e) => {
+  // --- 5. DATA TRANSMISSION ---
+  document.getElementById('clinical-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.querySelector('.submit-btn');
     const originalText = btn.innerHTML;
-    btn.innerHTML = '⚡ Transmitting to DDE...';
+    
+    btn.innerHTML = 'Connecting to Digital Twin...';
     btn.disabled = true;
 
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
     
-    // Add Timestamp
-    data.submission_timestamp = new Date().toISOString();
+    // Handle Multi-Selects (combine into string)
+    QUESTIONS.filter(q => q.type === 'multi_select').forEach(q => {
+      const checked = Array.from(document.querySelectorAll(`input[name="${q.id}"]:checked`)).map(cb => cb.value);
+      data[q.id] = checked.join('; ');
+    });
 
     try {
-        await fetch(APPS_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors', 
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(data)
-        });
+      await fetch(ENDPOINT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data)
+      });
 
-        setTimeout(() => {
-          document.getElementById('dynamic-form').style.display = 'none';
-          document.getElementById('success-section').style.display = 'block';
-        }, 1500);
+      // Simulation delay for UX
+      setTimeout(() => {
+        document.getElementById('clinical-form').style.display = 'none';
+        document.getElementById('success-view').style.display = 'block';
+      }, 1500);
 
-    } catch (error) {
-        console.error("Connection Error:", error);
-        alert("Error connecting to DDE. Check internet.");
-        btn.innerHTML = originalText;
-        btn.disabled = false;
+    } catch (err) {
+      alert('Connection Error. Please check internet.');
+      btn.innerHTML = originalText;
+      btn.disabled = false;
     }
   });
+
+  // --- 6. APPSHEET INTEGRATION ---
+  function prefillFromAppSheet() {
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get('email');
+    const name = params.get('name');
+
+    if (email) {
+      const emailField = document.querySelector('input[name="email"]');
+      if (emailField) {
+        emailField.value = email;
+        emailField.readOnly = true;
+        emailField.style.background = '#f0f0f0';
+      }
+    }
+    if (name) {
+      const nameField = document.querySelector('input[name="name"]');
+      if (nameField) nameField.value = name;
+    }
+  }
+
 </script>
 </body>
 </html>
