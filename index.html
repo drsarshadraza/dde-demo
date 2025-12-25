@@ -111,13 +111,13 @@
 <div class="container">
   <div class="header">
     <h1 class="logo-text">PHYTOMEDIX AI</h1>
-    <div class="tagline">Digital Biological Twin Engine v8.0</div>
+    <div class="tagline">Digital Biological Twin Engine v9.0</div>
   </div>
 
   <div class="card">
     <div id="loading">
-      <h3>Connecting to Question Bank...</h3>
-      <p>Loading diagnostics_qbank_v3.0.csv</p>
+      <h3>Initializing Clinical Engine...</h3>
+      <p>Loading diagnostics_qbank_v4.0.csv</p>
     </div>
 
     <form id="dynamic-form" style="display: none;">
@@ -128,8 +128,8 @@
     <div id="success-section" class="success-message">
       <div class="checkmark">🧬</div>
       <h2>Digital Twin Activated</h2>
-      <p>Your biological data has been successfully ingested.</p>
-      <p>The <strong>Clinical Intelligence Engine</strong> is analyzing your profile.</p>
+      <p>Your clinical profile has been successfully ingested.</p>
+      <p>The <strong>Metabolic Intelligence Engine</strong> is calculating your risk scores.</p>
       <button onclick="location.reload()" style="margin-top:20px; padding:10px 20px; cursor:pointer;">Start New Simulation</button>
     </div>
   </div>
@@ -137,19 +137,19 @@
 
 <script>
   // --- CONFIGURATION ---
-  // UPDATED TO v3.0 CSV
-  const CSV_FILE = 'diagnostics_qbank_v3.0.csv'; 
+  // UPDATED TO v4.0 CSV (The new clinical schema)
+  const CSV_FILE = 'diagnostics_qbank_v4.0.csv'; 
   
   // *** PASTE YOUR APPS SCRIPT URL HERE ***
   const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxkYVGNSv2XdPLPynGaTBW4yyUNIU9Htf-KlSITDv4kZWTPC7BmPbGK_4YsCKO1mMSl/exec';
 
   let questionData = [];
 
-  document.addEventListener('DOMContentLoaded', () => { fetchCSV(); }); // --- NEW CODE: AUTO-DETECT USER FROM APPSHEET ---
-document.addEventListener('DOMContentLoaded', () => {
-    fetchCSV(); // Your existing function
+  // --- AUTO-DETECT USER FROM APPSHEET ---
+  document.addEventListener('DOMContentLoaded', () => {
+    fetchCSV(); 
 
-    // Check if AppSheet sent an email
+    // Check if AppSheet sent an email/name via URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const appSheetEmail = urlParams.get('email');
     const appSheetName = urlParams.get('name');
@@ -162,15 +162,15 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (emailInput) {
                 emailInput.value = appSheetEmail;
-                emailInput.readOnly = true; // Lock it so they can't change it
+                emailInput.readOnly = true; 
                 emailInput.style.backgroundColor = "#e0e0e0";
             }
             if (nameInput && appSheetName) {
                 nameInput.value = appSheetName;
             }
-        }, 1000); // 1 second delay to ensure questions are loaded
+        }, 1500); // Increased delay slightly to ensure V4 csv loads
     }
-});
+  });
 
   async function fetchCSV() {
     try {
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const result = [];
     for (let i = 1; i < lines.length; i++) {
       if (!lines[i].trim()) continue;
-      // Regex to handle commas inside quotes
+      // Regex to handle commas inside quotes (e.g. "Option A, Option B")
       const regex = /(".*?"|[^",\s]+)(?=\s*,|\s*$)/g;
       const matches = lines[i].match(regex) || [];
       if (matches.length > 0) {
@@ -256,22 +256,31 @@ document.addEventListener('DOMContentLoaded', () => {
     checkBranching();
   }
 
+  // --- UPDATED BRANCHING LOGIC FOR V4.0 ---
   function checkBranching() {
     questionData.forEach(q => {
+      // Check if this question has a condition attached (branching_if)
       if (q.branching_if && q.branching_if.trim() !== "") {
         const wrapper = document.getElementById(`wrapper-${q.id}`);
         if (!wrapper) return;
+
+        // Parse the rule: "if=Q-003=Current"
         const cleanRule = q.branching_if.replace('if=', '').replace(/"/g, '');
         const parts = cleanRule.split('=');
+
         if (parts.length === 2) {
-          const targetId = parts[0].trim();
-          const targetValue = parts[1].trim();
-          const selected = document.querySelector(`input[name="${targetId}"]:checked`);
+          const targetId = parts[0].trim(); // e.g., Q-003
+          const targetValue = parts[1].trim(); // e.g., Current
           
-          if (selected && selected.value === targetValue) {
+          // Find the input element for the target question
+          const targetInput = document.querySelector(`input[name="${targetId}"]:checked`);
+          
+          // Check if it matches
+          if (targetInput && targetInput.value === targetValue) {
             wrapper.style.display = 'block'; 
           } else {
             wrapper.style.display = 'none';  
+            // Clear values if hidden so we don't submit ghost data
             wrapper.querySelectorAll('input').forEach(i => {
                 if(i.type==='number' || i.type==='text' || i.type==='email') i.value = '';
                 if(i.type==='radio' || i.type==='checkbox') i.checked = false;
