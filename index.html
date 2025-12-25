@@ -33,7 +33,7 @@
 
     /* HEADER */
     .header { text-align: center; margin-bottom: 30px; }
-    .logo { color: var(--primary); font-size: 24px; font-weight: 900; letter-spacing: -1px; margin: 0; }
+    .logo { color: var(--primary); font-size: 28px; font-weight: 900; letter-spacing: -1px; margin: 0; }
     .badge { 
       background: #e8f5e9; color: var(--primary); 
       font-size: 11px; font-weight: 700; 
@@ -75,7 +75,7 @@
       border-radius: 8px;
       font-size: 16px;
       transition: 0.2s;
-      box-sizing: border-box; /* Fixes width issues */
+      box-sizing: border-box; 
     }
     input:focus { border-color: var(--primary); outline: none; }
 
@@ -175,27 +175,27 @@
     { id: 'email', text: 'Email Address', type: 'email' },
     
     { id: 'Q-001', text: 'What is your age?', type: 'single_numeric' },
-    { id: 'Q-002', text: 'Biological Sex', type: 'single_choice', options: ['Male', 'Female'] },
+    { id: 'Q-002', text: 'What is your biological sex?', type: 'single_choice', options: ['Male', 'Female'] },
     
     // CARDIOVASCULAR
     { id: 'Q-003', text: 'Do you currently smoke cigarettes or use tobacco?', type: 'single_choice', options: ['Never', 'Former', 'Current'] },
-    { id: 'Q-004', text: 'How many cigarettes per day?', type: 'single_numeric', condition: { if: 'Q-003', equals: 'Current' } },
+    { id: 'Q-004', text: 'How many cigarettes per day do you smoke?', type: 'single_numeric', condition: { if: 'Q-003', equals: 'Current' } },
     
     { id: 'Q-019', text: 'Enter your last known Systolic BP (Top number)', type: 'single_numeric' },
     { id: 'Q-015', text: 'CRITICAL: Do you feel short of breath on mild exertion?', type: 'yes_no', options: ['Yes', 'No'] },
-    { id: 'Q-009', text: 'Family History: Heart Attack before age 55?', type: 'yes_no', options: ['Yes', 'No'] },
+    { id: 'Q-009', text: 'Family History: Has a parent had a heart attack before age 55?', type: 'yes_no', options: ['Yes', 'No'] },
 
     // METABOLIC
-    { id: 'Q-021', text: 'Current Weight (kg)', type: 'single_numeric' },
-    { id: 'Q-022', text: 'Current Height (cm)', type: 'single_numeric' },
+    { id: 'Q-021', text: 'What is your current Weight (in kg)?', type: 'single_numeric' },
+    { id: 'Q-022', text: 'What is your current Height (in cm)?', type: 'single_numeric' },
     { id: 'Q-010', text: 'Have you been diagnosed with any of the following?', type: 'multi_select', options: ['Hypertension', 'Diabetes Type 2', 'High Cholesterol', 'None'] },
     { id: 'Q-020', text: 'Fasting Glucose (mg/dL) - Leave blank if unknown', type: 'single_numeric' },
     
     // LIFESTYLE & ONCOLOGY
-    { id: 'Q-005', text: 'Alcohol Consumption Frequency', type: 'single_choice', options: ['Never', 'Monthly', 'Weekly', 'Daily'] },
-    { id: 'Q-006', text: 'Average Sleep per Night (Hours)', type: 'single_numeric' },
-    { id: 'Q-014', text: 'Unexplained Weight Loss (>5kg) recently?', type: 'yes_no', options: ['Yes', 'No'] },
-    { id: 'Q-017', text: 'Family History of Cancer?', type: 'multi_select', options: ['Breast', 'Colon', 'Prostate', 'None'] }
+    { id: 'Q-005', text: 'How often do you consume alcoholic beverages?', type: 'single_choice', options: ['Never', 'Monthly', 'Weekly', 'Daily'] },
+    { id: 'Q-006', text: 'How many hours of sleep do you usually get per night?', type: 'single_numeric' },
+    { id: 'Q-014', text: 'Have you unintentionally lost more than 5 kg recently?', type: 'yes_no', options: ['Yes', 'No'] },
+    { id: 'Q-017', text: 'Do you have a family history of any of these cancers?', type: 'multi_select', options: ['Breast', 'Colon', 'Prostate', 'None'] }
   ];
 
   // --- 3. RENDERING ENGINE ---
