@@ -1,0 +1,104 @@
+{
+  "meta": {
+    "version": "1.0",
+    "description": "Phytomedix Clinical Risk Scoring Engine"
+  },
+  "domains": {
+    "Metabolic": {
+      "BMI": {
+        "calculation": "weight / ((height/100)^2)",
+        "thresholds": {
+          "25": 10,
+          "30": 20,
+          "35": 30
+        }
+      },
+      "activity_minutes": {
+        "scoring": {
+          "less_than_150": 15,
+          "between_150_300": 5,
+          "more_than_300": 0
+        }
+      },
+      "diet_veg": {
+        "scoring": {
+          "0-1": 15,
+          "2-4": 5,
+          "5+": 0
+        }
+      },
+      "diagnoses": {
+        "contains_Diabetes Type 2": 25,
+        "contains_High Cholesterol": 10
+      },
+      "glucose_fasting": {
+        "ranges": {
+          "100-125": 10,
+          "126+": 25
+        }
+      }
+    },
+    "Cardiovascular": {
+      "age": {
+        "male": {
+          "40-49": 10,
+          "50-59": 20,
+          "60+": 30
+        },
+        "female": {
+          "50-59": 10,
+          "60+": 20
+        }
+      },
+      "bp_systolic": {
+        "ranges": {
+          "130-139": 10,
+          "140-159": 20,
+          "160+": 30
+        }
+      },
+      "smoking_status": {
+        "scoring": {
+          "Former": 10,
+          "Current": 25,
+          "Never": 0
+        }
+      },
+      "family_cvd": {
+        "Yes": 15,
+        "No": 0
+      },
+      "stress_level": {
+        "High": 10,
+        "Moderate": 5,
+        "Low": 0
+      }
+    },
+    "Oncologic": {
+      "age": {
+        "40-49": 5,
+        "50-59": 15,
+        "60+": 25
+      },
+      "family_cancer": {
+        "per_selection_score": 10
+      },
+      "alcohol_freq": {
+        "Daily": 15,
+        "Weekly": 5,
+        "Never": 0
+      },
+      "smoking_status": {
+        "Current": 15
+      },
+      "weight_loss": {
+        "Yes": 20
+      }
+    }
+  },
+  "risk_tiers": {
+    "Low": {"min": 0, "max": 29, "action": "Routine Monitoring"},
+    "Moderate": {"min": 30, "max": 59, "action": "Lifestyle Intervention"},
+    "High": {"min": 60, "max": 100, "action": "Clinical Referral Required"}
+  }
+}
