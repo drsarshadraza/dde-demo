@@ -27,7 +27,7 @@
 
     .container {
       width: 100%;
-      max-width: 650px;
+      max-width: 700px;
       margin: 40px 20px;
     }
 
@@ -66,6 +66,15 @@
       color: var(--text);
       line-height: 1.4;
     }
+    
+    .q-sublabel {
+      display: block;
+      font-size: 14px;
+      color: #666;
+      margin-top: -10px;
+      margin-bottom: 15px;
+      font-style: italic;
+    }
 
     /* INPUTS */
     input[type="text"], input[type="email"], input[type="number"] {
@@ -85,6 +94,14 @@
       grid-template-columns: 1fr;
       gap: 10px;
     }
+    
+    /* 2-Column Grid for long lists */
+    .options-grid-double {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 500px) { .options-grid-double { grid-template-columns: 1fr; } }
 
     .option-card {
       display: flex;
@@ -95,6 +112,7 @@
       cursor: pointer;
       transition: all 0.2s;
       background: #fff;
+      font-size: 15px;
     }
     .option-card:hover { border-color: #b0bec5; background: #fafafa; }
     
@@ -144,13 +162,14 @@
 <div class="container">
   <div class="header">
     <h1 class="logo">PHYTOMEDIX AI</h1>
-    <span class="badge">Digital Twin v10.0</span>
+    <span class="badge">Digital Twin v11.0</span>
   </div>
 
   <div class="card">
     
     <form id="clinical-form">
-      <div id="form-content"></div> <button type="submit" class="submit-btn">Run Clinical Analysis</button>
+      <div id="form-content"></div> 
+      <button type="submit" class="submit-btn">Run Clinical Analysis</button>
     </form>
 
     <div id="success-view" class="success-box">
@@ -168,8 +187,7 @@
   // Connects to your Google Apps Script
   const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbx8Da6T9lg4NVdKXTbCFlPujJ7YcJA1ewxohoJEkjjBgKLaXg8i9ydwJ6sXS7jnA-w-4A/exec';
 
-  // --- 2. EMBEDDED QUESTION BANK (No CSV Required) ---
-  // This guarantees perfect text rendering every time.
+  // --- 2. EMBEDDED QUESTION BANK (Updated with Full Product Catalog Indications) ---
   const QUESTIONS = [
     { id: 'name', text: 'Full Name', type: 'text' },
     { id: 'email', text: 'Email Address', type: 'email' },
@@ -177,23 +195,74 @@
     { id: 'Q-001', text: 'What is your age?', type: 'single_numeric' },
     { id: 'Q-002', text: 'What is your biological sex?', type: 'single_choice', options: ['Male', 'Female'] },
     
-    // CARDIOVASCULAR
-    { id: 'Q-003', text: 'Do you currently smoke cigarettes or use tobacco?', type: 'single_choice', options: ['Never', 'Former', 'Current'] },
-    { id: 'Q-004', text: 'How many cigarettes per day do you smoke?', type: 'single_numeric', condition: { if: 'Q-003', equals: 'Current' } },
-    
-    { id: 'Q-019', text: 'Enter your last known Systolic BP (Top number)', type: 'single_numeric' },
-    { id: 'Q-015', text: 'CRITICAL: Do you feel short of breath on mild exertion?', type: 'yes_no', options: ['Yes', 'No'] },
-    { id: 'Q-009', text: 'Family History: Has a parent had a heart attack before age 55?', type: 'yes_no', options: ['Yes', 'No'] },
-
-    // METABOLIC
+    // --- METABOLIC BASELINE ---
     { id: 'Q-021', text: 'What is your current Weight (in kg)?', type: 'single_numeric' },
     { id: 'Q-022', text: 'What is your current Height (in cm)?', type: 'single_numeric' },
-    { id: 'Q-010', text: 'Have you been diagnosed with any of the following?', type: 'multi_select', options: ['Hypertension', 'Diabetes Type 2', 'High Cholesterol', 'None'] },
-    { id: 'Q-020', text: 'Fasting Glucose (mg/dL) - Leave blank if unknown', type: 'single_numeric' },
     
-    // LIFESTYLE & ONCOLOGY
-    { id: 'Q-005', text: 'How often do you consume alcoholic beverages?', type: 'single_choice', options: ['Never', 'Monthly', 'Weekly', 'Daily'] },
-    { id: 'Q-006', text: 'How many hours of sleep do you usually get per night?', type: 'single_numeric' },
+    // --- COMPREHENSIVE MEDICAL INDICATIONS (From Product Catalog) ---
+    { 
+      id: 'Q-010', 
+      text: 'Do you have any of the following health concerns or diagnoses?', 
+      subtext: 'Select all that apply. This helps us formulate your stack.',
+      type: 'multi_select', 
+      layout: 'double', // Triggers 2-column layout
+      options: [
+        'None',
+        // Metabolic & Gut
+        'Diabetes Type 2', 
+        'High Cholesterol',
+        'Hypertension',
+        'Obesity / Weight Management',
+        'IBS (Irritable Bowel)',
+        'Gastritis / Acid Reflux',
+        'Bloating / Digestion Issues',
+        'Liver Fatty / Inflammation',
+        // Brain & Mood
+        'Brain Fog / Focus Issues',
+        'Anxiety / High Stress',
+        'Insomnia / Sleep Issues',
+        'Low Energy / Fatigue',
+        'Memory Decline',
+        // Physical
+        'Joint Pain / Arthritis',
+        'Muscle Weakness',
+        'Skin Health / Aging',
+        'Vision / Eye Health',
+        'Low Immunity / Frequent Colds',
+        // Hormonal (Men)
+        'Low Libido (Men)',
+        'Prostate Issues',
+        'Erectile Dysfunction',
+        'Male Fertility',
+        // Hormonal (Women)
+        'Menopause Symptoms',
+        'PCOS / Hormonal Imbalance',
+        'Low Libido (Women)',
+        'Female Fertility'
+      ] 
+    },
+
+    { id: 'Q-020', text: 'Fasting Glucose (mg/dL) - Leave blank if unknown', type: 'single_numeric' },
+    // --- NEW SPECIFIC DOMAINS (Matches Diagnostics v5.0) ---
+    { 
+      id: 'Q-023', 
+      text: 'How would you rate your daily focus and memory?', 
+      type: 'single_choice', 
+      options: ['Low', 'Average', 'High'] 
+    },
+    { 
+      id: 'Q-024', 
+      text: 'Do you experience joint stiffness or pain?', 
+      type: 'yes_no', 
+      options: ['Yes', 'No'] 
+    },
+    // --- CARDIOVASCULAR & SAFETY ---
+    { id: 'Q-019', text: 'Enter your last known Systolic BP (Top number)', type: 'single_numeric' },
+    { id: 'Q-015', text: 'CRITICAL: Do you feel short of breath on mild exertion?', type: 'yes_no', options: ['Yes', 'No'] },
+    
+    { id: 'Q-003', text: 'Do you currently smoke cigarettes or use tobacco?', type: 'single_choice', options: ['Never', 'Former', 'Current'] },
+    
+    // --- ONCOLOGY & LIFESTYLE ---
     { id: 'Q-014', text: 'Have you unintentionally lost more than 5 kg recently?', type: 'yes_no', options: ['Yes', 'No'] },
     { id: 'Q-017', text: 'Do you have a family history of any of these cancers?', type: 'multi_select', options: ['Breast', 'Colon', 'Prostate', 'None'] }
   ];
@@ -220,6 +289,14 @@
       label.className = 'q-label';
       label.textContent = q.text;
       wrapper.appendChild(label);
+      
+      // Subtext (if exists)
+      if (q.subtext) {
+        const sub = document.createElement('span');
+        sub.className = 'q-sublabel';
+        sub.textContent = q.subtext;
+        wrapper.appendChild(sub);
+      }
 
       // Input Logic
       if (q.type === 'text' || q.type === 'email') {
@@ -230,12 +307,16 @@
       }
       else if (q.options) {
         const grid = document.createElement('div');
-        grid.className = 'options-grid';
+        // Use double column grid if specified in question config
+        grid.className = q.layout === 'double' ? 'options-grid-double' : 'options-grid';
         
         const inputType = q.type === 'multi_select' ? 'checkbox' : 'radio';
         
         q.options.forEach(opt => {
-          const optId = `${q.id}-${opt.replace(/\s+/g, '')}`;
+          // Unique ID generation handling spaces and special chars
+          const cleanOpt = opt.replace(/[^a-zA-Z0-9]/g, '');
+          const optId = `${q.id}-${cleanOpt}`;
+          
           grid.innerHTML += `
             <label class="option-card" for="${optId}">
               <input type="${inputType}" id="${optId}" name="${q.id}" value="${opt}" onchange="checkLogic()">
@@ -254,24 +335,32 @@
 
   // --- 4. LOGIC ENGINE (Branching) ---
   function checkLogic() {
-    QUESTIONS.forEach(q => {
-      if (q.condition) {
-        const wrapper = document.getElementById(`wrap-${q.id}`);
-        const parentInput = document.querySelector(`input[name="${q.condition.if}"]:checked`);
-        
-        if (parentInput && parentInput.value === q.condition.equals) {
-          wrapper.style.display = 'block';
+    // Current logic is simple, can be expanded if needed
+    // Example: Hide Male questions if Female selected
+    
+    // Get Sex Selection
+    const sexInput = document.querySelector('input[name="Q-002"]:checked');
+    const sex = sexInput ? sexInput.value : null;
+
+    if (sex) {
+      const maleOnlyTerms = ['Prostate', 'Erectile', 'Male'];
+      const femaleOnlyTerms = ['Menopause', 'PCOS', 'Female', 'Breast'];
+      
+      // Loop through Q-010 options to show/hide based on sex
+      const options = document.querySelectorAll('#wrap-Q-010 .option-card');
+      options.forEach(opt => {
+        const text = opt.textContent;
+        if (sex === 'Female' && maleOnlyTerms.some(term => text.includes(term))) {
+          opt.style.display = 'none';
+          opt.querySelector('input').checked = false; // Uncheck if hidden
+        } else if (sex === 'Male' && femaleOnlyTerms.some(term => text.includes(term))) {
+          opt.style.display = 'none';
+          opt.querySelector('input').checked = false;
         } else {
-          wrapper.style.display = 'none';
-          // Clear hidden values
-          const hiddenInputs = wrapper.querySelectorAll('input');
-          hiddenInputs.forEach(input => {
-            if (input.type === 'text' || input.type === 'number') input.value = '';
-            if (input.type === 'radio' || input.type === 'checkbox') input.checked = false;
-          });
+          opt.style.display = 'flex';
         }
-      }
-    });
+      });
+    }
   }
 
   // --- 5. DATA TRANSMISSION ---
