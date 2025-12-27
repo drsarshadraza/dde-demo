@@ -187,7 +187,7 @@
   // Connects to your Google Apps Script
   const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbyhP5V0najpzFsTivvfo6fIwZh5W4Hmdq18JCCYXguzxs8PHm28kq1pjj84p5jj2TzsWg/exec';
 
-  // --- 2. EMBEDDED QUESTION BANK (Updated with Full Product Catalog Indications) ---
+ // --- 2. EMBEDDED QUESTION BANK (Cleaned) ---
   const QUESTIONS = [
     { id: 'name', text: 'Full Name', type: 'text' },
     { id: 'email', text: 'Email Address', type: 'email' },
@@ -199,51 +199,31 @@
     { id: 'Q-021', text: 'What is your current Weight (in kg)?', type: 'single_numeric' },
     { id: 'Q-022', text: 'What is your current Height (in cm)?', type: 'single_numeric' },
     
-    // --- COMPREHENSIVE MEDICAL INDICATIONS (From Product Catalog) ---
+    // --- COMPREHENSIVE MEDICAL INDICATIONS ---
     { 
       id: 'Q-010', 
       text: 'Do you have any of the following health concerns or diagnoses?', 
       subtext: 'Select all that apply. This helps us formulate your stack.',
       type: 'multi_select', 
-      layout: 'double', // Triggers 2-column layout
+      layout: 'double', 
       options: [
         'None',
         // Metabolic & Gut
-        'Diabetes Type 2', 
-        'High Cholesterol',
-        'Hypertension',
-        'Obesity / Weight Management',
-        'IBS (Irritable Bowel)',
-        'Gastritis / Acid Reflux',
-        'Bloating / Digestion Issues',
-        'Liver Fatty / Inflammation',
+        'Diabetes Type 2', 'High Cholesterol', 'Hypertension', 'Obesity / Weight Management',
+        'IBS (Irritable Bowel)', 'Gastritis / Acid Reflux', 'Bloating / Digestion Issues', 'Liver Fatty / Inflammation',
         // Brain & Mood
-        'Brain Fog / Focus Issues',
-        'Anxiety / High Stress',
-        'Insomnia / Sleep Issues',
-        'Low Energy / Fatigue',
-        'Memory Decline',
+        'Brain Fog / Focus Issues', 'Anxiety / High Stress', 'Insomnia / Sleep Issues', 'Low Energy / Fatigue', 'Memory Decline',
         // Physical
-        'Joint Pain / Arthritis',
-        'Muscle Weakness',
-        'Skin Health / Aging',
-        'Vision / Eye Health',
-        'Low Immunity / Frequent Colds',
-        // Hormonal (Men)
-        'Low Libido (Men)',
-        'Prostate Issues',
-        'Erectile Dysfunction',
-        'Male Fertility',
-        // Hormonal (Women)
-        'Menopause Symptoms',
-        'PCOS / Hormonal Imbalance',
-        'Low Libido (Women)',
-        'Female Fertility'
+        'Joint Pain / Arthritis', 'Muscle Weakness', 'Skin Health / Aging', 'Vision / Eye Health', 'Low Immunity / Frequent Colds',
+        // Hormonal
+        'Low Libido (Men)', 'Prostate Issues', 'Erectile Dysfunction', 'Male Fertility',
+        'Menopause Symptoms', 'PCOS / Hormonal Imbalance', 'Low Libido (Women)', 'Female Fertility'
       ] 
     },
 
     { id: 'Q-020', text: 'Fasting Glucose (mg/dL) - Leave blank if unknown', type: 'single_numeric' },
-    // --- NEW SPECIFIC DOMAINS (Matches Diagnostics v5.0) ---
+    
+    // --- NEW SPECIFIC DOMAINS (Fixed: No Duplicates) ---
     { 
       id: 'Q-023', 
       text: 'How would you rate your daily focus and memory?', 
@@ -256,30 +236,16 @@
       type: 'yes_no', 
       options: ['Yes', 'No'] 
     },
-    // --- NEW SPECIFIC DOMAINS (Matches Diagnostics v5.0) ---
-    { 
-      id: 'Q-023', 
-      text: 'How would you rate your daily focus and memory?', 
-      type: 'single_choice', 
-      options: ['Low', 'Average', 'High'] 
-    },
-    { 
-      id: 'Q-024', 
-      text: 'Do you experience joint stiffness or pain?', 
-      type: 'yes_no', 
-      options: ['Yes', 'No'] 
-    },
+    
     // --- CARDIOVASCULAR & SAFETY ---
     { id: 'Q-019', text: 'Enter your last known Systolic BP (Top number)', type: 'single_numeric' },
     { id: 'Q-015', text: 'CRITICAL: Do you feel short of breath on mild exertion?', type: 'yes_no', options: ['Yes', 'No'] },
-    
     { id: 'Q-003', text: 'Do you currently smoke cigarettes or use tobacco?', type: 'single_choice', options: ['Never', 'Former', 'Current'] },
     
     // --- ONCOLOGY & LIFESTYLE ---
     { id: 'Q-014', text: 'Have you unintentionally lost more than 5 kg recently?', type: 'yes_no', options: ['Yes', 'No'] },
     { id: 'Q-017', text: 'Do you have a family history of any of these cancers?', type: 'multi_select', options: ['Breast', 'Colon', 'Prostate', 'None'] }
   ];
-
   // --- 3. RENDERING ENGINE ---
   document.addEventListener('DOMContentLoaded', () => {
     renderForm();
