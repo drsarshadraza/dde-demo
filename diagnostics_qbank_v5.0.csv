@@ -1,0 +1,25 @@
+id,text,type,options,branching_if,domain,variable_name
+Q-001,What is your age?,single_numeric,,,Demographics,age
+Q-002,What is your biological sex?,single_choice,Male;Female,,Demographics,sex
+Q-003,Do you currently smoke cigarettes or use tobacco?,single_choice,Never;Former;Current,,Cardiovascular,smoking_status
+Q-004,How many cigarettes per day do you smoke?,single_numeric,,if=Q-003=Current,Cardiovascular,smoking_intensity
+Q-005,How often do you consume alcoholic beverages?,single_choice,Never;Monthly;Weekly;Daily,,Oncologic,alcohol_freq
+Q-006,How many hours of sleep do you usually get per night?,single_numeric,,,Cardiovascular,sleep_hours
+Q-007,How would you rate your typical stress level?,single_choice,Low;Moderate;High,,Cardiovascular,stress_level
+Q-008,How many minutes of moderate or vigorous activity do you do weekly?,single_numeric,,,Metabolic,activity_minutes
+Q-009,Has any parent or sibling been diagnosed with heart disease before age 55?,yes_no,Yes;No,,Cardiovascular,family_cvd
+Q-010,Do you have any of the following health concerns or diagnoses?,multi_select,None;Diabetes Type 2;High Cholesterol;Hypertension;Obesity / Weight Management;IBS (Irritable Bowel);Gastritis / Acid Reflux;Bloating / Digestion Issues;Liver Fatty / Inflammation;Brain Fog / Focus Issues;Anxiety / High Stress;Insomnia / Sleep Issues;Low Energy / Fatigue;Memory Decline;Joint Pain / Arthritis;Muscle Weakness;Skin Health / Aging;Vision / Eye Health;Low Immunity / Frequent Colds;Low Libido (Men);Prostate Issues;Erectile Dysfunction;Male Fertility;Menopause Symptoms;PCOS / Hormonal Imbalance;Low Libido (Women);Female Fertility,,Metabolic,diagnoses
+Q-011,Have you ever used hormone replacement therapy (HRT)?,yes_no,Yes;No,if=Q-002=Female,Oncologic,hrt_usage
+Q-012,Have you noticed erectile difficulties?,yes_no,Yes;No,if=Q-002=Male,Cardiovascular,ed_status
+Q-013,Do you have any known food allergies or intolerances?,multi_select,Gluten;Lactose;Nuts;Shellfish;None,,Metabolic,allergies
+Q-014,"In the past year, have you unintentionally lost more than 5 kg?",yes_no,Yes;No,,Oncologic,weight_loss
+Q-015,Do you often feel short of breath on mild exertion?,yes_no,Yes;No,,Cardiovascular,dyspnea
+Q-016,Have you ever been told you have fatty liver disease?,yes_no,Yes;No,,Metabolic,fatty_liver
+Q-017,Do you have a family history of any of the following cancers?,multi_select,Breast;Ovarian;Colorectal;Prostate;None,,Oncologic,family_cancer
+Q-018,"Do you have known genetic results (e.g. BRCA, APOE)?",yes_no,Yes;No,,Genetics,has_genetics
+Q-019,Enter your most recent Systolic Blood Pressure (Top number) if known.,single_numeric,,,Cardiovascular,bp_systolic
+Q-020,Enter your most recent Fasting Glucose (mg/dL) if known.,single_numeric,,,Metabolic,glucose_fasting
+Q-021,What is your current Weight (in kg)?,single_numeric,,,Metabolic,weight_kg
+Q-022,What is your current Height (in cm)?,single_numeric,,,Metabolic,height_cm
+Q-023,How would you rate your daily focus and memory?,single_choice,Low;Average;High,,Cognitive,cognitive_rating
+Q-024,Do you experience joint stiffness or pain?,yes_no,Yes;No,,Joints,joint_status
