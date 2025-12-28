@@ -13,6 +13,7 @@
       --surface: #ffffff;
       --text: #2c3e50;
       --accent: #e8f5e9;
+      --error: #e57373;
     }
 
     body {
@@ -51,6 +52,7 @@
       border: 1px solid rgba(0,0,0,0.05);
       position: relative;
       overflow: hidden;
+      min-height: 400px;
     }
 
     /* WIZARD STEPS */
@@ -58,7 +60,7 @@
     .step.active { display: block; }
     
     @keyframes slideIn { 
-      from { opacity: 0; transform: translateX(20px); } 
+      from { opacity: 0; transform: translateX(10px); } 
       to { opacity: 1; transform: translateX(0); } 
     }
 
@@ -72,52 +74,85 @@
 
     /* QUESTIONS */
     .q-label {
-      display: block; font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--text);
+      display: block; font-size: 20px; font-weight: 700; margin-bottom: 10px; color: var(--text);
     }
     .q-sub {
-      display: block; font-size: 13px; color: #666; margin-bottom: 20px;
+      display: block; font-size: 14px; color: #666; margin-bottom: 25px; line-height: 1.5;
     }
 
     /* INPUTS */
-    input[type="text"], input[type="email"], input[type="number"] {
-      width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px;
-      font-size: 16px; box-sizing: border-box; transition: 0.2s;
+    input[type="text"], input[type="email"], input[type="number"], select {
+      width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 8px;
+      font-size: 16px; box-sizing: border-box; transition: 0.2s; background: #fff;
     }
-    input:focus { border-color: var(--secondary); outline: none; }
+    input:focus, select:focus { border-color: var(--secondary); outline: none; }
 
-    /* SELECTION CARDS */
-    .options-grid { display: grid; gap: 10px; }
+    /* OPTIONS GRID */
+    .options-grid { display: grid; gap: 12px; }
     .option-card {
-      display: flex; align-items: center; padding: 12px;
-      border: 2px solid #eee; border-radius: 8px; cursor: pointer; transition: 0.2s;
+      display: flex; align-items: center; padding: 14px;
+      border: 2px solid #eee; border-radius: 10px; cursor: pointer; transition: 0.2s;
     }
     .option-card:hover { border-color: #ccc; background: #fafafa; }
     .option-card:has(input:checked) {
       border-color: var(--primary); background-color: var(--accent); color: var(--primary); font-weight: 600;
     }
-    input[type="radio"], input[type="checkbox"] { margin-right: 10px; accent-color: var(--primary); }
+    input[type="radio"], input[type="checkbox"] { margin-right: 12px; transform: scale(1.2); accent-color: var(--primary); }
 
     /* BUTTONS */
-    .btn-group { display: flex; justify-content: space-between; margin-top: 30px; }
+    .btn-group { display: flex; justify-content: space-between; margin-top: 40px; }
     .btn {
-      padding: 12px 24px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 14px;
+      padding: 14px 28px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 15px; transition: 0.2s;
     }
     .btn-next { background: var(--primary); color: white; flex: 1; margin-left: 10px; }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(27,94,32,0.2); }
     .btn-back { background: #f0f0f0; color: #666; }
-    .btn:disabled { background: #e0e0e0; cursor: not-allowed; }
+    .btn:disabled { background: #e0e0e0; cursor: not-allowed; transform: none; }
 
-    /* RESULTS VIEW */
-    .result-view { display: none; text-align: center; }
-    .score-card { margin-top: 20px; margin-bottom: 30px; }
-    
+    /* LOADING OVERLAY */
     .loading-overlay {
       position: absolute; top:0; left:0; width:100%; height:100%;
-      background: rgba(255,255,255,0.9); display: none;
+      background: rgba(255,255,255,0.95); display: none;
       justify-content: center; align-items: center; z-index: 10;
-      flex-direction: column;
+      flex-direction: column; text-align: center;
     }
-    .spinner { font-size: 40px; animation: spin 1s infinite linear; }
+    .spinner { font-size: 50px; animation: spin 1s infinite linear; margin-bottom: 20px; }
     @keyframes spin { 100% { transform: rotate(360deg); } }
+    .loading-text { font-weight: 600; color: var(--text); font-size: 18px; }
+    .loading-sub { font-size: 13px; color: #666; margin-top: 5px; }
+
+    /* RESULTS DASHBOARD */
+    .result-view { display: none; }
+    .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #999; margin-bottom: 15px; font-weight: 700; }
+    
+    /* RADAR CHART CONTAINER */
+    .chart-container { position: relative; height: 300px; width: 100%; margin-bottom: 40px; }
+
+    /* PRESCRIPTION STACK */
+    .stack-container { margin-bottom: 30px; }
+    .stack-header { 
+      display: flex; align-items: center; background: #fafafa; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px;
+    }
+    .stack-icon { font-size: 20px; margin-right: 10px; }
+    .stack-title { font-weight: 700; color: var(--text); }
+    
+    .product-card {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 15px 0; border-bottom: 1px solid #eee;
+    }
+    .product-info strong { color: var(--primary); display: block; margin-bottom: 4px; }
+    .product-info span { font-size: 12px; color: #666; background: #eee; padding: 2px 6px; border-radius: 4px; }
+    .product-price { font-weight: 700; color: var(--text); text-align: right; }
+    .product-price small { display: block; font-size: 10px; color: #999; font-weight: 400; }
+
+    .total-bar {
+      background: var(--text); color: white; padding: 20px; border-radius: 12px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: 30px;
+    }
+    .checkout-btn {
+      background: var(--secondary); color: white; border: none; padding: 10px 20px;
+      border-radius: 6px; font-weight: 700; cursor: pointer;
+    }
 
   </style>
 </head>
@@ -137,7 +172,7 @@
 
     <form id="clinical-form">
       
-      <div class="step active" data-step="1">
+      <div class="step active">
         <label class="q-label">Let's build your Digital Twin.</label>
         <span class="q-sub">We need a few basics to calibrate the engine.</span>
         
@@ -149,8 +184,9 @@
         </div>
         <div style="display:flex; gap:10px;">
           <input type="number" name="Q-001" placeholder="Age" style="flex:1" required>
-          <div style="flex:1; border:2px solid #eee; border-radius:8px; display:flex; align-items:center; padding-left:10px;">
+          <div style="flex:1; border:2px solid #eee; border-radius:8px; display:flex; align-items:center; padding-left:10px; background:#fff;">
             <select name="Q-002" style="border:none; width:100%; outline:none; background:transparent;">
+              <option value="" disabled selected>Select Sex</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
@@ -158,20 +194,21 @@
         </div>
       </div>
 
-      <div class="step" data-step="2">
+      <div class="step">
         <label class="q-label">Biometric Scan</label>
-        <span class="q-sub">These numbers help us calculate metabolic load.</span>
+        <span class="q-sub">These numbers help us calculate metabolic load and dosage safety.</span>
         
         <div style="display:flex; gap:10px; margin-bottom:15px;">
           <input type="number" name="Q-021" placeholder="Weight (kg)">
           <input type="number" name="Q-022" placeholder="Height (cm)">
         </div>
         <input type="number" name="Q-020" placeholder="Fasting Glucose (mg/dL) - Optional">
+        <p style="font-size:12px; color:#999; margin-top:10px;">*Leave glucose blank if unknown.</p>
       </div>
 
-      <div class="step" data-step="3">
+      <div class="step">
         <label class="q-label">System Diagnostics</label>
-        <span class="q-sub">Select everything that applies to you.</span>
+        <span class="q-sub">Select all conditions that apply to you.</span>
         
         <div class="options-grid">
           <label class="option-card"><input type="checkbox" name="Q-010" value="Diabetes Type 2"> Diabetes / High Blood Sugar</label>
@@ -179,43 +216,45 @@
           <label class="option-card"><input type="checkbox" name="Q-010" value="Hypertension"> High Blood Pressure</label>
           <label class="option-card"><input type="checkbox" name="Q-010" value="Brain Fog / Focus Issues"> Brain Fog / Low Focus</label>
           <label class="option-card"><input type="checkbox" name="Q-010" value="Joint Pain / Arthritis"> Joint Pain / Stiffness</label>
-          <label class="option-card"><input type="checkbox" name="Q-010" value="Low Energy / Fatigue"> Chronic Fatigue</label>
           <label class="option-card"><input type="checkbox" name="Q-010" value="IBS (Irritable Bowel)"> Gut Issues (IBS/Bloating)</label>
-          <label class="option-card"><input type="checkbox" name="Q-010" value="Low Libido (Men)"> Low Libido / Vitality</label>
+          <label class="option-card"><input type="checkbox" name="Q-010" value="Low Libido (Men)"> Low Libido (Men)</label>
+          <label class="option-card"><input type="checkbox" name="Q-010" value="Menopause Symptoms"> Menopause Symptoms (Women)</label>
         </div>
       </div>
 
-      <div class="step" data-step="4">
+      <div class="step">
         <label class="q-label">Targeted Assessment</label>
+        <span class="q-sub">Refining the cognitive and physical model.</span>
         
-        <p style="margin-bottom:5px; font-weight:600;">Daily Focus & Memory?</p>
-        <div class="options-grid" style="margin-bottom:20px;">
+        <p style="margin-bottom:10px; font-weight:600;">Daily Focus & Memory?</p>
+        <div class="options-grid" style="margin-bottom:25px;">
           <label class="option-card"><input type="radio" name="Q-023" value="Low"> Low (Struggling)</label>
           <label class="option-card"><input type="radio" name="Q-023" value="Average"> Average</label>
           <label class="option-card"><input type="radio" name="Q-023" value="High"> High (Sharp)</label>
         </div>
 
-        <p style="margin-bottom:5px; font-weight:600;">Joint Stiffness?</p>
+        <p style="margin-bottom:10px; font-weight:600;">Joint Stiffness?</p>
         <div class="options-grid">
           <label class="option-card"><input type="radio" name="Q-024" value="Yes"> Yes, regularly</label>
           <label class="option-card"><input type="radio" name="Q-024" value="No"> No, rarely</label>
         </div>
       </div>
 
-      <div class="step" data-step="5">
-        <label class="q-label">Safety Check</label>
-        <span class="q-sub">We cross-reference contraindications.</span>
+      <div class="step">
+        <label class="q-label">Safety & Contraindications</label>
+        <span class="q-sub">We cross-reference your answers against 166 safety rules.</span>
         
-        <p>Do you smoke?</p>
-        <div class="options-grid" style="margin-bottom:15px;">
+        <p style="margin-bottom:10px; font-weight:600;">Do you smoke?</p>
+        <div class="options-grid" style="margin-bottom:25px;">
           <label class="option-card"><input type="radio" name="Q-003" value="Never"> Never</label>
+          <label class="option-card"><input type="radio" name="Q-003" value="Former"> Former</label>
           <label class="option-card"><input type="radio" name="Q-003" value="Current"> Currently</label>
         </div>
 
-        <p>Shortness of breath on exertion?</p>
+        <p style="margin-bottom:10px; font-weight:600;">Shortness of breath on exertion?</p>
         <div class="options-grid">
           <label class="option-card"><input type="radio" name="Q-015" value="No"> No</label>
-          <label class="option-card"><input type="radio" name="Q-015" value="Yes"> Yes (Safety Flag)</label>
+          <label class="option-card"><input type="radio" name="Q-015" value="Yes"> Yes (Clinical Flag)</label>
         </div>
       </div>
 
@@ -228,24 +267,50 @@
 
     <div class="loading-overlay" id="loader">
       <div class="spinner">🧬</div>
-      <p>Generating Clinical Twin...</p>
-      <p style="font-size:12px; color:#666;">Analyzing Contraindications...</p>
+      <div class="loading-text" id="loadingText">Calibrating Digital Twin...</div>
+      <div class="loading-sub">Please wait while we access the clinical engine</div>
     </div>
 
     <div id="result-view" class="result-view">
-      <h2 style="color:var(--primary);">Analysis Complete</h2>
-      <p style="color:#666;">Here is your Digital Health Twin.</p>
       
-      <div class="score-card">
+      <div style="text-align:center; margin-bottom:30px;">
+        <h2 style="color:var(--primary); margin:0;">Analysis Complete</h2>
+        <p style="color:#666; margin-top:5px;">Your Biological Digital Twin is ready.</p>
+      </div>
+
+      <div class="section-title">SYSTEMIC HEALTH VISUALIZATION</div>
+      <div class="chart-container">
         <canvas id="twinChart"></canvas>
       </div>
 
-      <div style="background:#e8f5e9; padding:15px; border-radius:8px; margin-bottom:20px;">
-        <strong>✅ Protocol Generated</strong><br>
-        <span style="font-size:13px;">Your custom formulation has been sent to the lab queue.</span>
+      <div class="stack-container">
+        <div class="stack-header">
+          <span class="stack-icon">☀️</span>
+          <span class="stack-title">Morning Protocol (AM)</span>
+        </div>
+        <div id="am-stack-list">
+          </div>
       </div>
 
-      <button onclick="location.reload()" class="btn btn-next" style="width:100%;">Start New Session</button>
+      <div class="stack-container">
+        <div class="stack-header">
+          <span class="stack-icon">🌙</span>
+          <span class="stack-title">Evening Restoration (PM)</span>
+        </div>
+        <div id="pm-stack-list">
+          </div>
+      </div>
+
+      <div class="total-bar">
+        <div>
+          <div style="font-size:12px; opacity:0.8;">MONTHLY TOTAL</div>
+          <div style="font-size:24px; font-weight:700;" id="total-price">$0.00</div>
+        </div>
+        <button class="checkout-btn" onclick="alert('Proceeding to Secure Checkout...')">Subscribe & Save</button>
+      </div>
+
+      <button onclick="location.reload()" style="width:100%; padding:15px; margin-top:20px; background:none; border:1px solid #eee; color:#999; border-radius:8px; cursor:pointer;">Restart Assessment</button>
+
     </div>
 
   </div>
@@ -253,10 +318,12 @@
 
 <script>
   // --- CONFIGURATION ---
+  // PASTE YOUR DEPLOYED WEB APP URL HERE
   const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbyhP5V0najpzFsTivvfo6fIwZh5W4Hmdq18JCCYXguzxs8PHm28kq1pjj84p5jj2TzsWg/exec';
+  
+  // WIZARD LOGIC
   let currentStep = 0;
   const steps = document.querySelectorAll(".step");
-
   showStep(currentStep);
 
   function showStep(n) {
@@ -264,20 +331,17 @@
       s.classList.remove("active");
       if(index === n) s.classList.add("active");
     });
-
-    // Button Logic
-    document.getElementById("prevBtn").disabled = (n === 0);
-    document.getElementById("nextBtn").innerHTML = (n === steps.length - 1) ? "Run Analysis" : "Next Step";
     
-    // Progress Bar
+    document.getElementById("prevBtn").disabled = (n === 0);
+    document.getElementById("nextBtn").innerHTML = (n === steps.length - 1) ? "Run Clinical Analysis" : "Next Step";
+    
     const progress = ((n + 1) / steps.length) * 100;
     document.getElementById("progressBar").style.width = progress + "%";
   }
 
   function nextPrev(n) {
-    // Validation could go here
+    if (n === 1 && !validateForm()) return false;
     currentStep += n;
-    
     if (currentStep >= steps.length) {
       submitForm();
       return;
@@ -285,52 +349,91 @@
     showStep(currentStep);
   }
 
+  function validateForm() {
+    const activeStep = steps[currentStep];
+    const inputs = activeStep.querySelectorAll("input[required], select[required]");
+    let valid = true;
+    inputs.forEach(input => {
+      if (!input.value) {
+        input.style.borderColor = "var(--error)";
+        valid = false;
+      } else {
+        input.style.borderColor = "#eee";
+      }
+    });
+    return valid;
+  }
+
+  // SUBMISSION LOGIC
   async function submitForm() {
-    document.getElementById("loader").style.display = "flex";
+    // 1. THE "PROCESSING" EXPERIENCE
+    const loader = document.getElementById("loader");
+    const loadText = document.getElementById("loadingText");
+    loader.style.display = "flex";
     
+    const phrases = [
+      "Calibrating Digital Twin...", 
+      "Analyzing Metabolic Load...", 
+      "Checking 166 Safety Rules...", 
+      "Optimizing Dosing Strategy...",
+      "Generating Prescription..."
+    ];
+    let pIndex = 0;
+    const interval = setInterval(() => {
+      if(pIndex < phrases.length) {
+        loadText.innerText = phrases[pIndex];
+        pIndex++;
+      }
+    }, 800);
+
+    // Prepare Data
     const formData = new FormData(document.getElementById("clinical-form"));
     const data = Object.fromEntries(formData.entries());
-    
-    // Handle Multi-Select (Q-010)
     const checked = Array.from(document.querySelectorAll('input[name="Q-010"]:checked')).map(cb => cb.value);
     data['Q-010'] = checked.join('; ');
 
     try {
-      const response = await fetch(ENDPOINT_URL, {
+      // Send to Backend
+      await fetch(ENDPOINT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams(data)
       });
 
-      // MOCK RESPONSE FOR VISUALIZATION (Since no-cors blocks reading actual response in client)
-      // In production, you would read the JSON response. Here we simulate the chart based on inputs.
+      // 2. RENDER DASHBOARD (Simulated Logic for Instant UI)
       setTimeout(() => {
-        document.getElementById("loader").style.display = "none";
+        clearInterval(interval);
+        loader.style.display = "none";
         document.getElementById("clinical-form").style.display = "none";
         document.querySelector(".btn-group").style.display = "none";
+        document.querySelector(".progress-container").style.display = "none";
         document.getElementById("result-view").style.display = "block";
         
-        renderChart(data);
-      }, 2000);
+        renderDashboard(data);
+      }, 4000); // 4s wait for perceived value
 
     } catch (err) {
-      alert("Error connecting to engine.");
-      document.getElementById("loader").style.display = "none";
+      alert("Connection Error.");
+      loader.style.display = "none";
     }
   }
 
-  function renderChart(data) {
-    // Simple logic to simulate scores for the chart based on inputs
-    // This makes the demo feel "Real" immediately
-    let scores = {
-      metabolic: data['Q-010'].includes('Diabetes') ? 90 : 30,
-      cardio: data['Q-010'].includes('Hypertension') ? 80 : 20,
-      cognitive: data['Q-023'] === 'Low' ? 75 : 25,
-      joints: data['Q-024'] === 'Yes' ? 85 : 15,
-      gut: data['Q-010'].includes('IBS') ? 70 : 10,
-      hormonal: 40 // Baseline
-    };
+  function renderDashboard(data) {
+    // A. SCORING SIMULATION (Mirrors Backend Logic)
+    let scores = { metabolic: 30, cardio: 30, cognitive: 10, joints: 10, gut: 10, hormonal: 10 };
+    const diag = (data['Q-010'] || "").toLowerCase();
+    
+    if (diag.includes('diabetes') || diag.includes('weight')) scores.metabolic = 90;
+    if (diag.includes('hypertension') || diag.includes('cholesterol')) scores.cardio = 80;
+    if (diag.includes('brain') || data['Q-023'] === 'Low') scores.cognitive = 75;
+    if (diag.includes('joint') || data['Q-024'] === 'Yes') scores.joints = 85;
+    if (diag.includes('ibs') || diag.includes('bloating')) scores.gut = 70;
+    if (diag.includes('libido') || diag.includes('menopause')) scores.hormonal = 65;
+
+    // Render Radar Chart 
+
+[Image of Spider Chart]
 
     const ctx = document.getElementById('twinChart').getContext('2d');
     new Chart(ctx, {
@@ -338,7 +441,7 @@
       data: {
         labels: ['Metabolic', 'Cardio', 'Cognitive', 'Joints', 'Gut', 'Hormonal'],
         datasets: [{
-          label: 'Systemic Risk Load',
+          label: 'Health Integrity Score',
           data: [scores.metabolic, scores.cardio, scores.cognitive, scores.joints, scores.gut, scores.hormonal],
           backgroundColor: 'rgba(27, 94, 32, 0.2)',
           borderColor: '#1b5e20',
@@ -347,16 +450,73 @@
         }]
       },
       options: {
-        scales: {
-          r: {
-            angleLines: { color: '#eee' },
-            grid: { color: '#eee' },
-            suggestedMin: 0,
-            suggestedMax: 100
-          }
-        }
+        scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } },
+        plugins: { legend: { display: false } }
       }
     });
+
+    // B. PRESCRIPTION LOGIC (Commercial)
+    let amItems = [];
+    let pmItems = [];
+    let total = 0;
+
+    // Logic: Map High Scores to Mock Products (Matches your Catalog P-IDs)
+    if (scores.metabolic > 60) {
+      amItems.push({ name: "Metabolic Control Core", reason: "Glucose Stabilization", price: 49.00, type: "Core" });
+      if (scores.metabolic > 80) amItems.push({ name: "Berberine HCL Booster", reason: "Insulin Sensitivity", price: 29.00, type: "Booster" });
+    }
+    if (scores.cardio > 60) {
+      amItems.push({ name: "Cardio Tonic Blend", reason: "Vascular Flow", price: 45.00, type: "Core" });
+    }
+    if (scores.cognitive > 60) {
+      amItems.push({ name: "Nootropic Focus Matrix", reason: "Dopamine Support", price: 39.00, type: "Core" });
+    }
+    if (scores.joints > 60) {
+      pmItems.push({ name: "Healthy Joints Complex", reason: "Inflammation Repair", price: 45.00, type: "Restorative" });
+    }
+    if (scores.gut > 60) {
+      amItems.push({ name: "Gut Biome Reset", reason: "Microbiome Diversity", price: 35.00, type: "Probiotic" });
+    }
+    if (scores.hormonal > 50) {
+      const sex = data['Q-002'];
+      if(sex === 'Male') amItems.push({ name: "Male Vitality Drive", reason: "Testosterone Optimization", price: 55.00, type: "Core" });
+      else amItems.push({ name: "Hormone Harmony", reason: "Cycle Balance", price: 55.00, type: "Core" });
+    }
+
+    // Default Fallback
+    if (amItems.length === 0 && pmItems.length === 0) {
+      amItems.push({ name: "Total Health Foundation", reason: "Baseline Optimization", price: 49.00, type: "Core" });
+    }
+
+    // Helper to render list
+    const renderList = (items, containerId) => {
+      const container = document.getElementById(containerId);
+      if (items.length === 0) {
+        container.innerHTML = "<div style='color:#999; font-size:13px; font-style:italic; padding:10px;'>No specific requirements for this phase.</div>";
+        return;
+      }
+      let html = "";
+      items.forEach(item => {
+        total += item.price;
+        html += `
+          <div class="product-card">
+            <div class="product-info">
+              <strong>${item.name}</strong>
+              <span>${item.reason}</span>
+            </div>
+            <div class="product-price">
+              $${item.price.toFixed(2)}
+              <small>${item.type}</small>
+            </div>
+          </div>`;
+      });
+      container.innerHTML = html;
+    };
+
+    renderList(amItems, 'am-stack-list');
+    renderList(pmItems, 'pm-stack-list');
+    
+    document.getElementById('total-price').innerText = "$" + total.toFixed(2);
   }
 </script>
 
