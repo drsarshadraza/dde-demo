@@ -185,7 +185,7 @@
         <div style="display:flex; gap:10px;">
           <input type="number" name="Q-001" placeholder="Age" style="flex:1" required>
           <div style="flex:1; border:2px solid #eee; border-radius:8px; display:flex; align-items:center; padding-left:10px; background:#fff;">
-            <select name="Q-002" style="border:none; width:100%; outline:none; background:transparent;">
+            <select name="Q-002" style="border:none; width:100%; outline:none; background:transparent;" required>
               <option value="" disabled selected>Select Sex</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
@@ -318,7 +318,7 @@
 
 <script>
   // --- CONFIGURATION ---
-  // PASTE YOUR DEPLOYED WEB APP URL HERE
+  // PASTE YOUR DEPLOYED WEB APP URL HERE (Ending in /exec)
   const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbyhP5V0najpzFsTivvfo6fIwZh5W4Hmdq18JCCYXguzxs8PHm28kq1pjj84p5jj2TzsWg/exec';
   
   // WIZARD LOGIC
@@ -402,6 +402,7 @@
       });
 
       // 2. RENDER DASHBOARD (Simulated Logic for Instant UI)
+      // Note: Real API would return JSON here. We simulate for UX speed.
       setTimeout(() => {
         clearInterval(interval);
         loader.style.display = "none";
@@ -414,7 +415,7 @@
       }, 4000); // 4s wait for perceived value
 
     } catch (err) {
-      alert("Connection Error.");
+      alert("Connection Error. Please check internet.");
       loader.style.display = "none";
     }
   }
@@ -431,10 +432,7 @@
     if (diag.includes('ibs') || diag.includes('bloating')) scores.gut = 70;
     if (diag.includes('libido') || diag.includes('menopause')) scores.hormonal = 65;
 
-    // Render Radar Chart 
-
-[Image of Spider Chart]
-
+    // Render Radar Chart
     const ctx = document.getElementById('twinChart').getContext('2d');
     new Chart(ctx, {
       type: 'radar',
@@ -462,30 +460,30 @@
 
     // Logic: Map High Scores to Mock Products (Matches your Catalog P-IDs)
     if (scores.metabolic > 60) {
-      amItems.push({ name: "Metabolic Control Core", reason: "Glucose Stabilization", price: 49.00, type: "Core" });
+      amItems.push({ name: "P125: Diabetes Blend", reason: "Glucose Stabilization", price: 49.00, type: "Core" });
       if (scores.metabolic > 80) amItems.push({ name: "Berberine HCL Booster", reason: "Insulin Sensitivity", price: 29.00, type: "Booster" });
     }
     if (scores.cardio > 60) {
-      amItems.push({ name: "Cardio Tonic Blend", reason: "Vascular Flow", price: 45.00, type: "Core" });
+      amItems.push({ name: "P113: Cardio Tonic Blend", reason: "Vascular Flow", price: 45.00, type: "Core" });
     }
     if (scores.cognitive > 60) {
-      amItems.push({ name: "Nootropic Focus Matrix", reason: "Dopamine Support", price: 39.00, type: "Core" });
+      amItems.push({ name: "P118: Nootropic Nutrients", reason: "Dopamine Support", price: 39.00, type: "Core" });
     }
     if (scores.joints > 60) {
-      pmItems.push({ name: "Healthy Joints Complex", reason: "Inflammation Repair", price: 45.00, type: "Restorative" });
+      pmItems.push({ name: "P153: Healthy Joints Blend", reason: "Inflammation Repair", price: 45.00, type: "Restorative" });
     }
     if (scores.gut > 60) {
-      amItems.push({ name: "Gut Biome Reset", reason: "Microbiome Diversity", price: 35.00, type: "Probiotic" });
+      amItems.push({ name: "P130: IBS Blend", reason: "Microbiome Diversity", price: 35.00, type: "Probiotic" });
     }
     if (scores.hormonal > 50) {
       const sex = data['Q-002'];
-      if(sex === 'Male') amItems.push({ name: "Male Vitality Drive", reason: "Testosterone Optimization", price: 55.00, type: "Core" });
-      else amItems.push({ name: "Hormone Harmony", reason: "Cycle Balance", price: 55.00, type: "Core" });
+      if(sex === 'Male') amItems.push({ name: "P109: Sterone Booster", reason: "Testosterone Optimization", price: 55.00, type: "Core" });
+      else amItems.push({ name: "P138: Menopause Relief", reason: "Cycle Balance", price: 55.00, type: "Core" });
     }
 
     // Default Fallback
     if (amItems.length === 0 && pmItems.length === 0) {
-      amItems.push({ name: "Total Health Foundation", reason: "Baseline Optimization", price: 49.00, type: "Core" });
+      amItems.push({ name: "P146: Multivitamin Foundation", reason: "Baseline Optimization", price: 49.00, type: "Core" });
     }
 
     // Helper to render list
