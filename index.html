@@ -6,161 +6,67 @@
   <title>Phytomedix | Clinical Twin Engine</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* 1. CORE THEME: CLINICAL BUT PREMIUM */
+    /* 1. CORE THEME */
     :root {
-      --primary: #1b5e20; /* Deep Medical Green */
-      --secondary: #4caf50; /* Action Green */
-      --bg: #f4f7f6;
-      --surface: #ffffff;
-      --text: #2c3e50;
-      --accent: #e8f5e9;
-      --error: #e57373;
+      --primary: #1b5e20; --secondary: #4caf50; --bg: #f4f7f6;
+      --surface: #ffffff; --text: #2c3e50; --accent: #e8f5e9;
     }
-
-    body {
-      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text);
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 650px;
-      margin: 40px 20px;
-    }
-
-    /* HEADER */
+    body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); display:flex; justify-content:center; min-height:100vh; margin:0; padding:20px; }
+    .container { width: 100%; max-width: 650px; }
+    
+    /* CARDS */
+    .card { background: var(--surface); border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow:hidden; min-height:500px; }
     .header { text-align: center; margin-bottom: 25px; }
-    .logo { color: var(--primary); font-size: 26px; font-weight: 900; letter-spacing: -0.5px; margin: 0; }
-    .badge { 
-      background: var(--accent); color: var(--primary); 
-      font-size: 11px; font-weight: 700; 
-      padding: 4px 8px; border-radius: 4px; 
-      text-transform: uppercase; letter-spacing: 1px;
-    }
+    .logo { color: var(--primary); font-size: 26px; font-weight: 900; margin: 0; }
+    .badge { background: var(--accent); color: var(--primary); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; letter-spacing: 1px; }
 
-    /* MAIN INTERFACE CARD */
-    .card {
-      background: var(--surface);
-      border-radius: 16px;
-      padding: 35px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      border: 1px solid rgba(0,0,0,0.05);
-      position: relative;
-      overflow: hidden;
-      min-height: 500px;
-    }
-
-    /* WIZARD ANIMATIONS */
+    /* WIZARD */
     .step { display: none; animation: fadeIn 0.5s ease-out; }
     .step.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    @keyframes fadeIn { 
-      from { opacity: 0; transform: translateY(10px); } 
-      to { opacity: 1; transform: translateY(0); } 
-    }
-
-    /* PROGRESS BAR */
-    .progress-container {
-      height: 6px; background: #eee; border-radius: 3px; margin-bottom: 30px;
-    }
-    .progress-bar {
-      height: 100%; background: var(--primary); width: 0%; transition: width 0.4s ease; border-radius: 3px;
-    }
-
-    /* TYPOGRAPHY */
-    .q-label {
-      display: block; font-size: 22px; font-weight: 700; margin-bottom: 10px; color: var(--text);
-    }
-    .q-sub {
-      display: block; font-size: 15px; color: #666; margin-bottom: 25px; line-height: 1.5;
-    }
-
     /* INPUTS */
-    input[type="text"], input[type="email"], input[type="number"], select {
-      width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px;
-      font-size: 16px; box-sizing: border-box; transition: 0.2s; background: #fff;
-    }
-    input:focus, select:focus { border-color: var(--secondary); outline: none; }
-
-    /* OPTIONS GRID */
-    .options-grid { display: grid; gap: 12px; }
-    .option-card {
-      display: flex; align-items: center; padding: 14px;
-      border: 2px solid #eee; border-radius: 10px; cursor: pointer; transition: 0.2s;
-    }
-    .option-card:hover { border-color: #ccc; background: #fafafa; }
-    .option-card:has(input:checked) {
-      border-color: var(--primary); background-color: var(--accent); color: var(--primary); font-weight: 600;
-    }
-    input[type="radio"], input[type="checkbox"] { margin-right: 15px; transform: scale(1.3); accent-color: var(--primary); }
+    input[type="text"], input[type="email"], input[type="number"], select { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; margin-bottom:15px; }
+    input:focus { border-color: var(--secondary); outline: none; }
+    .options-grid { display: grid; gap: 10px; }
+    .option-card { display: flex; align-items: center; padding: 14px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; }
+    .option-card:hover { background: #fafafa; }
+    .option-card:has(input:checked) { border-color: var(--primary); background: var(--accent); font-weight: 600; color: var(--primary); }
+    input[type="checkbox"], input[type="radio"] { margin-right: 12px; transform: scale(1.3); accent-color: var(--primary); }
 
     /* BUTTONS */
-    .btn-group { display: flex; justify-content: space-between; margin-top: 40px; }
-    .btn {
-      padding: 14px 28px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 16px; transition: 0.2s;
-    }
-    .btn-next { background: var(--primary); color: white; flex: 1; margin-left: 15px; box-shadow: 0 4px 12px rgba(27,94,32,0.2); }
-    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(27,94,32,0.3); }
+    .btn-group { display: flex; justify-content: space-between; margin-top: 30px; }
+    .btn { padding: 14px 28px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 16px; }
+    .btn-next { background: var(--primary); color: white; flex: 1; margin-left: 10px; }
     .btn-back { background: #f0f0f0; color: #666; }
-    .btn:disabled { background: #e0e0e0; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* LOADING OVERLAY */
-    .loading-overlay {
-      position: absolute; top:0; left:0; width:100%; height:100%;
-      background: rgba(255,255,255,0.98); display: none;
-      justify-content: center; align-items: center; z-index: 100;
-      flex-direction: column; text-align: center;
-    }
-    .spinner { font-size: 60px; animation: pulse 1.5s infinite ease-in-out; margin-bottom: 20px; }
-    @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
-    .loading-text { font-weight: 700; color: var(--primary); font-size: 20px; margin-bottom: 5px; }
-    .loading-sub { font-size: 14px; color: #666; }
+    /* LOADER */
+    .loading-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.98); display: none; justify-content: center; align-items: center; flex-direction: column; z-index: 100; text-align: center; }
+    .spinner { font-size: 50px; animation: pulse 1s infinite; margin-bottom: 20px; }
+    @keyframes pulse { 50% { opacity: 0.5; transform: scale(1.1); } }
 
-    /* RESULTS DASHBOARD */
+    /* RESULTS */
     .result-view { display: none; }
-    .section-header { 
-      font-size: 12px; text-transform: uppercase; letter-spacing: 2px; 
-      color: #999; margin: 30px 0 15px 0; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 5px; 
-    }
-    
-    /* RADAR CHART CONTAINER */
-    .chart-container { position: relative; height: 320px; width: 100%; margin-bottom: 20px; }
+    .section-title { font-size: 12px; letter-spacing: 2px; color: #999; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 5px; margin: 30px 0 15px 0; }
+    .chart-container { height: 300px; margin-bottom: 30px; }
 
-    /* PRESCRIPTION STACK */
-    .stack-container { margin-bottom: 25px; }
-    .stack-header { 
-      display: flex; align-items: center; background: #f8f9fa; padding: 12px 15px; 
-      border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--secondary);
-    }
-    .stack-icon { font-size: 22px; margin-right: 12px; }
-    .stack-title { font-weight: 700; color: var(--text); font-size: 16px; }
-    
-    .product-card {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 0; border-bottom: 1px solid #eee; animation: fadeIn 0.5s ease;
-    }
-    .product-info strong { color: var(--primary); display: block; margin-bottom: 4px; font-size: 15px; }
-    .product-info span { font-size: 13px; color: #555; display: block; }
-    .product-badge { font-size: 10px; background: #e0f2f1; color: #00695c; padding: 2px 6px; border-radius: 4px; font-weight: 700; margin-top:4px; display:inline-block;}
-    .product-price { font-weight: 800; color: var(--text); text-align: right; font-size: 16px; }
+    /* PRODUCTS */
+    .stack-header { background: #f8f9fa; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--secondary); font-weight: 700; color: var(--text); }
+    .product-card { padding: 15px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: flex-start; }
+    .product-info strong { color: var(--primary); display: block; font-size: 16px; margin-bottom: 4px; }
+    .product-hero { font-size: 13px; color: #1b5e20; font-style: italic; display: block; margin-bottom: 4px; }
+    .product-ing { font-size: 11px; color: #666; display: block; margin-bottom: 6px; }
+    .product-badge { font-size: 11px; background: #e0f2f1; color: #00695c; padding: 3px 8px; border-radius: 4px; font-weight: 700; display: inline-block; }
+    .product-price { font-weight: 800; font-size: 16px; }
 
-    .total-bar {
-      background: var(--text); color: white; padding: 25px; border-radius: 12px;
-      display: flex; justify-content: space-between; align-items: center; margin-top: 40px;
-      box-shadow: 0 10px 25px rgba(44, 62, 80, 0.3);
-    }
-    .checkout-btn {
-      background: var(--secondary); color: white; border: none; padding: 12px 25px;
-      border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.2s;
-    }
-    .checkout-btn:hover { background: #43a047; transform: scale(1.02); }
+    /* LIFESTYLE CARDS (NEW) */
+    .life-card { background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+    .life-cat { font-size: 10px; font-weight: 800; color: #d48806; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
+    .life-title { font-weight: 700; color: #555; margin-bottom: 5px; display: block; }
+    .life-text { font-size: 13px; color: #666; line-height: 1.4; }
 
+    .total-bar { background: var(--text); color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
+    .checkout-btn { background: var(--secondary); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -168,289 +74,237 @@
 <div class="container">
   <div class="header">
     <h1 class="logo">PHYTOMEDIX</h1>
-    <span class="badge">Engine v15.0</span>
+    <span class="badge">Engine v17.0</span>
   </div>
 
   <div class="card">
-    
-    <div class="progress-container">
-      <div class="progress-bar" id="progressBar"></div>
-    </div>
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
 
     <form id="clinical-form">
       <div id="wizard-content"></div>
-      
       <div class="btn-group">
         <button type="button" class="btn btn-back" id="prevBtn" onclick="nextPrev(-1)" disabled>Back</button>
         <button type="button" class="btn btn-next" id="nextBtn" onclick="nextPrev(1)">Next Step</button>
       </div>
     </form>
+
     <div class="loading-overlay" id="loader">
       <div class="spinner">🧬</div>
       <div class="loading-text" id="loadingText">Calibrating Digital Twin...</div>
-      <div class="loading-sub">Please wait while we access the clinical engine</div>
+      <div class="loading-sub">Accessing Clinical Logic Engine v17.0</div>
     </div>
 
     <div id="result-view" class="result-view">
-      
       <div style="text-align:center; margin-bottom:30px;">
         <h2 style="color:var(--primary); margin:0;">Analysis Complete</h2>
-        <p style="color:#666; margin-top:5px;">Here is your Digital Health Twin.</p>
+        <p style="color:#666;">Your Holistic Digital Protocol</p>
       </div>
 
-      <div class="section-header">SYSTEMIC HEALTH SCORE</div>
-      <div class="chart-container">
-        <canvas id="twinChart"></canvas>
-      </div>
+      <div class="section-title">SYSTEMIC HEALTH SCORE</div>
+      <div class="chart-container"><canvas id="twinChart"></canvas></div>
 
-      <div class="section-header">YOUR PRESCRIPTION PROTOCOL</div>
+      <div class="section-title">PRECISION SUPPLEMENTS</div>
       <div class="stack-container">
-        <div class="stack-header">
-          <span class="stack-icon">☀️</span>
-          <span class="stack-title">Morning Fuel (AM)</span>
-        </div>
-        <div id="am-stack-list">
-          </div>
+        <div class="stack-header">☀️ Morning Fuel (AM)</div>
+        <div id="am-stack-list"></div>
+      </div>
+      <div class="stack-container">
+        <div class="stack-header">🌙 Evening Restoration (PM)</div>
+        <div id="pm-stack-list"></div>
       </div>
 
-      <div class="stack-container">
-        <div class="stack-header">
-          <span class="stack-icon">🌙</span>
-          <span class="stack-title">Evening Restoration (PM)</span>
-        </div>
-        <div id="pm-stack-list">
-          </div>
-      </div>
+      <div class="section-title">LIFESTYLE INTERVENTIONS</div>
+      <div id="lifestyle-list"></div>
 
       <div class="total-bar">
         <div>
-          <div style="font-size:12px; opacity:0.8;">MONTHLY SUBSCRIPTION</div>
-          <div style="font-size:28px; font-weight:700;" id="total-price">$0.00</div>
+          <div style="font-size:12px; opacity:0.8;">MONTHLY TOTAL</div>
+          <div style="font-size:24px; font-weight:700;" id="total-price">$0.00</div>
         </div>
-        <button class="checkout-btn" onclick="alert('Proceeding to Secure Checkout...')">Reserve My Stack</button>
+        <button class="checkout-btn" onclick="alert('Proceeding to Secure Checkout...')">Subscribe & Save</button>
       </div>
-
       <button onclick="location.reload()" style="width:100%; padding:15px; margin-top:20px; background:none; border:1px solid #eee; color:#999; border-radius:8px; cursor:pointer;">Restart Assessment</button>
-
     </div>
-
   </div>
 </div>
 
 <script>
-  // --- CONFIGURATION ---
-  const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbwyT4Po2AB55H34l3bmdCuw0Mw3UsC3dNAYUylkB0ExGYmRlyX7OQcB5bBNFrHeCU05/exec'; // REPLACE WITH YOUR URL
-  
-  // --- INTEGRATED DATA FROM CSV ---
-  // This matches your Diagnostics QBank v5.0 exactly
+  // UPDATE YOUR URL HERE
+  const ENDPOINT_URL = 'https://script.google.com/macros/s/AKfycbxdCWhRELOsDcBHUML7hSW9vT5nSyeZzs5qq8MAn2F94uV1iZHqqv1St6nnydv2C_jD/exec';
+
+  // --- DATA ---
   const QUESTIONS = [
     { "id": "name", "text": "Full Name", "type": "text" },
     { "id": "email", "text": "Email Address", "type": "email" },
     { "id": "Q-001", "text": "What is your age?", "type": "single_numeric" },
-    { "id": "Q-002", "text": "What is your biological sex?", "type": "single_choice", "options": [ "Male", "Female" ] },
-    { "id": "Q-003", "text": "Do you currently smoke cigarettes or use tobacco?", "type": "single_choice", "options": [ "Never", "Former", "Current" ] },
-    { "id": "Q-004", "text": "How many cigarettes per day do you smoke?", "type": "single_numeric" },
-    { "id": "Q-005", "text": "How often do you consume alcoholic beverages?", "type": "single_choice", "options": [ "Never", "Monthly", "Weekly", "Daily" ] },
-    { "id": "Q-006", "text": "How many hours of sleep do you usually get per night?", "type": "single_numeric" },
-    { "id": "Q-007", "text": "How would you rate your typical stress level?", "type": "single_choice", "options": [ "Low", "Moderate", "High" ] },
-    { "id": "Q-008", "text": "How many minutes of moderate or vigorous activity do you do weekly?", "type": "single_numeric" },
-    { "id": "Q-009", "text": "Has any parent or sibling been diagnosed with heart disease before age 55?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-010", "text": "Do you have any of the following health concerns or diagnoses?", "type": "multi_select", "options": [ "None", "Diabetes Type 2", "High Cholesterol", "Hypertension", "Obesity / Weight Management", "IBS (Irritable Bowel)", "Gastritis / Acid Reflux", "Bloating / Digestion Issues", "Liver Fatty / Inflammation", "Brain Fog / Focus Issues", "Anxiety / High Stress", "Insomnia / Sleep Issues", "Low Energy / Fatigue", "Memory Decline", "Joint Pain / Arthritis", "Muscle Weakness", "Skin Health / Aging", "Vision / Eye Health", "Low Immunity / Frequent Colds", "Low Libido (Men)", "Prostate Issues", "Erectile Dysfunction", "Male Fertility", "Menopause Symptoms", "PCOS / Hormonal Imbalance", "Low Libido (Women)", "Female Fertility" ], "subtext": "Select all that apply.", "layout": "double" },
-    { "id": "Q-011", "text": "Have you ever used hormone replacement therapy (HRT)?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-012", "text": "Have you noticed erectile difficulties?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-013", "text": "Do you have any known food allergies or intolerances?", "type": "multi_select", "options": [ "Gluten", "Lactose", "Nuts", "Shellfish", "None" ], "subtext": "Select all that apply." },
-    { "id": "Q-014", "text": "In the past year, have you unintentionally lost more than 5 kg?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-015", "text": "Do you often feel short of breath on mild exertion?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-016", "text": "Have you ever been told you have fatty liver disease?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-017", "text": "Do you have a family history of any of the following cancers?", "type": "multi_select", "options": [ "Breast", "Ovarian", "Colorectal", "Prostate", "None" ], "subtext": "Select all that apply." },
-    { "id": "Q-018", "text": "Do you have known genetic results (e.g. BRCA, APOE)?", "type": "yes_no", "options": [ "Yes", "No" ] },
-    { "id": "Q-019", "text": "Enter your most recent Systolic Blood Pressure (Top number) if known.", "type": "single_numeric" },
-    { "id": "Q-020", "text": "Enter your most recent Fasting Glucose (mg/dL) if known.", "type": "single_numeric" },
-    { "id": "Q-021", "text": "What is your current Weight (in kg)?", "type": "single_numeric" },
-    { "id": "Q-022", "text": "What is your current Height (in cm)?", "type": "single_numeric" },
-    { "id": "Q-023", "text": "How would you rate your daily focus and memory?", "type": "single_choice", "options": [ "Low", "Average", "High" ] },
-    { "id": "Q-024", "text": "Do you experience joint stiffness or pain?", "type": "yes_no", "options": [ "Yes", "No" ] }
+    { "id": "Q-002", "text": "Biological Sex", "type": "single_choice", "options": [ "Male", "Female" ] },
+    { "id": "Q-003", "text": "Smoking Status", "type": "single_choice", "options": [ "Never", "Former", "Current" ] },
+    { "id": "Q-010", "text": "Health Concerns (Select all)", "type": "multi_select", "options": ["None","Diabetes Type 2","High Cholesterol","Hypertension","Obesity / Weight Management","IBS","Brain Fog","Anxiety / Stress","Joint Pain / Arthritis","Low Libido","Menopause"], "layout": "double" },
+    { "id": "Q-021", "text": "Weight (kg)", "type": "single_numeric" },
+    { "id": "Q-023", "text": "Daily Focus Level?", "type": "single_choice", "options": [ "Low", "Average", "High" ] },
+    { "id": "Q-024", "text": "Joint Stiffness?", "type": "yes_no", "options": [ "Yes", "No" ] }
   ];
 
-  // --- WIZARD RENDER LOGIC ---
+  // --- WIZARD LOGIC ---
   let currentStep = 0;
-  let steps = [];
-
+  
   document.addEventListener('DOMContentLoaded', () => {
-    renderWizard();
-  });
-
-  function renderWizard() {
     const container = document.getElementById('wizard-content');
-    
-    // Group Questions into "Pages" for better UX
     const pages = [
       { title: "Identity", ids: ['name', 'email', 'Q-001', 'Q-002'] },
-      { title: "Biometrics", ids: ['Q-021', 'Q-022', 'Q-019', 'Q-020'] },
-      { title: "Lifestyle", ids: ['Q-003', 'Q-004', 'Q-005', 'Q-006', 'Q-007', 'Q-008'] },
-      { title: "Clinical Symptoms", ids: ['Q-010', 'Q-023', 'Q-024'] },
-      { title: "Medical History", ids: ['Q-009', 'Q-011', 'Q-012', 'Q-013', 'Q-014', 'Q-015', 'Q-016', 'Q-017', 'Q-018'] }
+      { title: "Health Profile", ids: ['Q-010'] },
+      { title: "Deep Dive", ids: ['Q-021', 'Q-003', 'Q-023', 'Q-024'] }
     ];
 
     pages.forEach((page, index) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = `step ${index === 0 ? 'active' : ''}`;
-      stepDiv.innerHTML = `<label class="q-label">${page.title}</label><span class="q-sub">Step ${index+1} of ${pages.length}</span>`;
+      const div = document.createElement('div');
+      div.className = `step ${index === 0 ? 'active' : ''}`;
+      div.innerHTML = `<label class="q-label">${page.title}</label><span class="q-sub">Step ${index+1}/${pages.length}</span>`;
       
       page.ids.forEach(qid => {
         const q = QUESTIONS.find(x => x.id === qid);
         if(!q) return;
-        
-        let html = `<div style="margin-bottom:20px;"><p style="font-weight:600; margin-bottom:8px;">${q.text}</p>`;
-        
-        if (q.type === 'text' || q.type === 'email') {
-          html += `<input type="${q.type}" name="${q.id}" placeholder="Type here..." required>`;
-        } 
-        else if (q.type === 'single_numeric') {
-          html += `<input type="number" name="${q.id}" placeholder="0" style="width:100%;">`;
-        }
-        else if (q.options) {
-          const type = (q.type === 'multi_select') ? 'checkbox' : 'radio';
-          html += `<div class="options-grid">`;
-          q.options.forEach(opt => {
-             // Clean ID for labels
-             const cleanOpt = opt.replace(/[^a-zA-Z0-9]/g, '');
-             const optId = `${q.id}-${cleanOpt}`;
-             html += `<label class="option-card" for="${optId}">
-                        <input type="${type}" id="${optId}" name="${q.id}" value="${opt}"> ${opt}
-                      </label>`;
+        let h = `<div style="margin-bottom:20px;"><p style="font-weight:600; margin-bottom:8px;">${q.text}</p>`;
+        if(q.type === 'text' || q.type === 'email' || q.type === 'single_numeric') {
+          h += `<input type="${q.type === 'single_numeric' ? 'number' : 'text'}" name="${q.id}" placeholder="...">`;
+        } else {
+          h += `<div class="options-grid">`;
+          q.options.forEach(o => {
+            h += `<label class="option-card"><input type="${q.type.includes('multi') ? 'checkbox' : 'radio'}" name="${q.id}" value="${o}"> ${o}</label>`;
           });
-          html += `</div>`;
+          h += `</div>`;
         }
-        html += `</div>`;
-        stepDiv.innerHTML += html;
+        h += `</div>`;
+        div.innerHTML += h;
       });
-      
-      container.appendChild(stepDiv);
+      container.appendChild(div);
     });
+    updateUI();
+  });
 
-    steps = document.querySelectorAll(".step");
-    showStep(0);
-  }
-
-  function showStep(n) {
-    steps.forEach((s, index) => {
+  function updateUI() {
+    const steps = document.querySelectorAll(".step");
+    steps.forEach((s, i) => {
       s.classList.remove("active");
-      if(index === n) s.classList.add("active");
+      if(i === currentStep) s.classList.add("active");
     });
-    
-    document.getElementById("prevBtn").disabled = (n === 0);
-    document.getElementById("nextBtn").innerHTML = (n === steps.length - 1) ? "Run Analysis" : "Next Step";
-    
-    const progress = ((n + 1) / steps.length) * 100;
-    document.getElementById("progressBar").style.width = progress + "%";
+    document.getElementById("prevBtn").disabled = (currentStep === 0);
+    document.getElementById("nextBtn").innerHTML = (currentStep === steps.length - 1) ? "Run Analysis" : "Next Step";
+    document.getElementById("progressBar").style.width = ((currentStep + 1) / steps.length) * 100 + "%";
   }
 
   function nextPrev(n) {
+    // Validation Logic could go here
     currentStep += n;
-    if (currentStep >= steps.length) {
+    if (currentStep >= document.querySelectorAll(".step").length) {
       submitForm();
       return;
     }
-    showStep(currentStep);
+    updateUI();
   }
 
   // --- SUBMISSION ---
   async function submitForm() {
-    const loader = document.getElementById("loader");
-    loader.style.display = "flex";
+    document.getElementById("loader").style.display = "flex";
     
-    // Animate Loading Text
-    const phrases = ["Calibrating Digital Twin...", "Analyzing Metabolic Load...", "Checking 166 Safety Rules...", "Generating Prescription..."];
-    let pIndex = 0;
-    const interval = setInterval(() => { if(pIndex < phrases.length) document.getElementById("loadingText").innerText = phrases[pIndex++]; }, 1000);
+    // Simulate Loading Stages
+    const phrases = ["Calibrating Twin...", "Checking Safety Rules...", "Generating Food Plan...", "Finalizing Protocol..."];
+    let p = 0;
+    const interval = setInterval(() => { if(p < 4) document.getElementById("loadingText").innerText = phrases[p++]; }, 800);
 
-    // Collect Data
     const formData = new FormData(document.getElementById("clinical-form"));
     const data = Object.fromEntries(formData.entries());
-    
-    // Fix Multi-Selects (Q-010, Q-013, Q-017)
-    ['Q-010', 'Q-013', 'Q-017'].forEach(key => {
-        const checked = Array.from(document.querySelectorAll(`input[name="${key}"]:checked`)).map(cb => cb.value);
-        data[key] = checked.join('; ');
-    });
+    // Fix Multi-Select
+    const checked = Array.from(document.querySelectorAll('input[name="Q-010"]:checked')).map(c => c.value);
+    data['Q-010'] = checked.join('; ');
 
     try {
-      await fetch(ENDPOINT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data)
-      });
-
+      await fetch(ENDPOINT_URL, { method: 'POST', mode: 'no-cors', body: new URLSearchParams(data) });
+      
       setTimeout(() => {
         clearInterval(interval);
-        loader.style.display = "none";
+        document.getElementById("loader").style.display = "none";
         document.getElementById("clinical-form").style.display = "none";
-        document.querySelector(".btn-group").style.display = "none";
+        document.querySelector(".progress-container").style.display = "none";
         document.getElementById("result-view").style.display = "block";
-        renderDashboard(data);
-      }, 4000);
-
-    } catch (err) {
-      alert("Connection Error.");
-      loader.style.display = "none";
-    }
+        renderResults(data);
+      }, 3500);
+    } catch(e) { alert("Error"); }
   }
 
-  // --- DASHBOARD RENDERER ---
-  function renderDashboard(data) {
-    // 1. Scoring (Simulation for Instant UX)
-    let scores = { metabolic: 20, cardio: 20, cognitive: 20, joints: 20, gut: 20, hormonal: 20 };
-    const symptoms = (data['Q-010'] || "") + (data['Q-013'] || ""); // Concatenate symptom strings
-    
-    if(symptoms.includes('Diabetes') || data['Q-021'] > 100) scores.metabolic = 90;
-    if(symptoms.includes('Joint') || data['Q-024'] === 'Yes') scores.joints = 85;
-    if(symptoms.includes('Brain') || data['Q-023'] === 'Low') scores.cognitive = 80;
-    if(symptoms.includes('IBS') || symptoms.includes('Bloating')) scores.gut = 75;
-    if(symptoms.includes('Libido')) scores.hormonal = 70;
+  // --- RENDER LOGIC (Simulates Backend v17.0 for Instant UI) ---
+  function renderResults(data) {
+    // 1. Scores
+    let s = { metabolic: 20, cardio: 20, cognitive: 20, joints: 20, gut: 20, hormonal: 20 };
+    const diag = (data['Q-010'] || "").toLowerCase();
+    if(diag.includes('diabetes')) s.metabolic = 95;
+    if(diag.includes('joint')) s.joints = 85;
+    if(diag.includes('brain')) s.cognitive = 80;
+    if(diag.includes('ibs')) s.gut = 75;
+    if(diag.includes('libido')) s.hormonal = 70;
 
-    // 2. Radar Chart
+    // 2. Chart
     new Chart(document.getElementById('twinChart'), {
       type: 'radar',
       data: {
         labels: ['Metabolic', 'Cardio', 'Cognitive', 'Joints', 'Gut', 'Hormonal'],
-        datasets: [{
-          label: 'Health Score',
-          data: [scores.metabolic, scores.cardio, scores.cognitive, scores.joints, scores.gut, scores.hormonal],
-          backgroundColor: 'rgba(27, 94, 32, 0.2)',
-          borderColor: '#1b5e20',
-          borderWidth: 2
-        }]
+        datasets: [{ label: 'Health Score', data: Object.values(s), backgroundColor: 'rgba(27,94,32,0.2)', borderColor: '#1b5e20', borderWidth: 2 }]
       },
       options: { scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } }, plugins: { legend: { display: false } } }
     });
 
-    // 3. Products (Simulation based on Scores)
-    let amList = [], pmList = [], total = 0;
-    
-    if(scores.metabolic > 60) amList.push({name: "P125: Diabetes Blend", price: 49, desc: "Glucose Control"});
-    if(scores.joints > 60) pmList.push({name: "P153: Healthy Joints Blend", price: 45, desc: "Inflammation Repair"});
-    if(scores.cognitive > 60) amList.push({name: "P118: Nootropic Nutrients", price: 39, desc: "Focus Support"});
-    if(scores.gut > 60) amList.push({name: "P130: IBS Blend", price: 35, desc: "Microbiome Reset"});
-    if(scores.hormonal > 60) amList.push({name: "P109: Sterone Booster", price: 55, desc: "Endocrine Support"});
-    
-    if(amList.length === 0 && pmList.length === 0) amList.push({name: "P146: Multivitamin Foundation", price: 49, desc: "Daily Essentials"});
+    // 3. Products
+    let am = [], pm = [], life = [], total = 0;
+    const dose = (sc) => sc > 80 ? "3 Caps (Acute)" : "2 Caps (Therapeutic)";
 
-    const printList = (list, divId) => {
-        let h = "";
-        list.forEach(i => {
-            total += i.price;
-            h += `<div class="product-card">
-                    <div class="product-info"><strong>${i.name}</strong><span>${i.desc}</span></div>
-                    <div class="product-price">$${i.price}</div>
-                  </div>`;
-        });
-        document.getElementById(divId).innerHTML = h || "<div style='padding:10px; color:#999;'>No specific requirements.</div>";
+    if(s.metabolic > 60) {
+      am.push({name: "Metabolic Core", hero: "Stabilizes Glucose", ing: "Berberine, Chromium", rx: dose(s.metabolic), price: 49});
+      life.push({cat: "Nutrition", title: "Glucose-Steady Plate", text: "Prioritize protein at breakfast. Avoid naked carbs."});
+      life.push({cat: "Movement", title: "Post-Meal Walk", text: "10min walk after meals cuts glucose spikes by 30%."});
+    }
+    if(s.joints > 60) {
+      pm.push({name: "Joint Complex", hero: "Reduces Inflammation", ing: "Curcumin, Boswellia", rx: dose(s.joints), price: 45});
+      life.push({cat: "Nutrition", title: "Anti-Inflammatory Diet", text: "Remove seed oils (canola/sunflower) to lower systemic inflammation."});
+    }
+    if(s.cognitive > 60) {
+      am.push({name: "Neuro Focus", hero: "Clears Brain Fog", ing: "Lion's Mane, Bacopa", rx: dose(s.cognitive), price: 39});
+      life.push({cat: "Sleep", title: "Glyphatic Clearance", text: "Stop eating 3 hours before bed to allow brain detox during deep sleep."});
+    }
+    if(s.gut > 60) {
+      am.push({name: "Gut Reset", hero: "Microbiome Balance", ing: "Spore Probiotics", rx: "2 Caps", price: 35});
+      life.push({cat: "Nutrition", title: "30-Plant Challenge", text: "Eat 30 different plants/week for microbiome diversity."});
+    }
+    
+    // Default Fallback
+    if(am.length === 0 && pm.length === 0) {
+      am.push({name: "Total Health", hero: "Baseline Essentials", ing: "Multi-Vitamin", rx: "1 Cap", price: 49});
+      life.push({cat: "General", title: "Maintenance", text: "Hydrate (3L/day) and maintain consistent sleep schedule."});
+    }
+
+    // Render Helpers
+    const rProd = (list, id) => {
+      let h = "";
+      list.forEach(i => {
+        total += i.price;
+        h += `<div class="product-card">
+          <div class="product-info"><strong>${i.name}</strong><span class="product-hero">"${i.hero}"</span><span class="product-ing">Contains: ${i.ing}</span><div class="product-badge">Rx: ${i.rx}</div></div>
+          <div class="product-price">$${i.price}</div>
+        </div>`;
+      });
+      document.getElementById(id).innerHTML = h || "<div style='padding:10px; color:#999; font-style:italic'>No items</div>";
     };
 
-    printList(amList, 'am-stack-list');
-    printList(pmList, 'pm-stack-list');
+    const rLife = (list) => {
+      let h = "";
+      list.forEach(i => {
+        h += `<div class="life-card"><span class="life-cat">${i.cat}</span><span class="life-title">${i.title}</span><div class="life-text">${i.text}</div></div>`;
+      });
+      document.getElementById("lifestyle-list").innerHTML = h;
+    };
+
+    rProd(am, 'am-stack-list');
+    rProd(pm, 'pm-stack-list');
+    rLife(life);
     document.getElementById('total-price').innerText = "$" + total.toFixed(2);
   }
 </script>
