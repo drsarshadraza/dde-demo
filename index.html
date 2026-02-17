@@ -1,265 +1,196 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phytomedix | Clinical Twin Engine</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    /* 1. CORE THEME */
-    :root {
-      --primary: #1b5e20; --secondary: #4caf50; --bg: #f4f7f6;
-      --surface: #ffffff; --text: #2c3e50; --accent: #e8f5e9;
-    }
-    body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); display:flex; justify-content:center; min-height:100vh; margin:0; padding:20px; }
-    .container { width: 100%; max-width: 650px; }
-    
-    /* CARDS */
-    .card { background: var(--surface); border-radius: 16px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); overflow:hidden; min-height:500px; }
-    .header { text-align: center; margin-bottom: 25px; }
-    .logo { color: var(--primary); font-size: 26px; font-weight: 900; margin: 0; }
-    .badge { background: var(--accent); color: var(--primary); font-size: 10px; font-weight: 700; padding: 4px 8px; border-radius: 4px; letter-spacing: 1px; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phytomedix Twin Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+  :root { --primary: #1b5e20; --secondary: #4caf50; --bg: #f4f7f6; --surface: #ffffff; --text: #2c3e50; --accent: #e8f5e9; }
+  body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); padding: 20px; display: flex; justify-content: center; }
+  .container { width: 100%; max-width: 600px; }
+  
+  /* CARDS */
+  .card { background: var(--surface); padding: 20px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+  .input-card h2 { color: var(--primary); text-align: center; }
+  .form-group { margin-bottom: 15px; }
+  input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+  .btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; font-size: 16px; }
+  
+  /* DASHBOARD */
+  .dashboard { display: none; }
+  .status-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+  .stat-card { background: var(--surface); padding: 15px; border-radius: 12px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+  .stat-label { font-size: 11px; text-transform: uppercase; color: #888; font-weight: 700; }
+  .stat-value { font-size: 24px; font-weight: 800; color: var(--primary); margin: 5px 0; }
+  
+  .coach-msg { background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 8px; font-size: 13px; text-align: center; margin-bottom: 20px; border: 1px solid #bbdefb; }
 
-    /* WIZARD */
-    .step { display: none; animation: fadeIn 0.5s ease-out; }
-    .step.active { display: block; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    
-    /* INPUTS */
-    input[type="text"], input[type="email"], input[type="number"], select { width: 100%; padding: 14px; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; margin-bottom:15px; }
-    input:focus { border-color: var(--secondary); outline: none; }
-    .options-grid { display: grid; gap: 10px; }
-    .option-card { display: flex; align-items: center; padding: 14px; border: 2px solid #eee; border-radius: 10px; cursor: pointer; }
-    .option-card:hover { background: #fafafa; }
-    .option-card:has(input:checked) { border-color: var(--primary); background: var(--accent); font-weight: 600; color: var(--primary); }
-    input[type="checkbox"], input[type="radio"] { margin-right: 12px; transform: scale(1.3); accent-color: var(--primary); }
-
-    /* BUTTONS */
-    .btn-group { display: flex; justify-content: space-between; margin-top: 30px; }
-    .btn { padding: 14px 28px; border-radius: 8px; font-weight: 700; cursor: pointer; border: none; font-size: 16px; }
-    .btn-next { background: var(--primary); color: white; flex: 1; margin-left: 10px; }
-    .btn-back { background: #f0f0f0; color: #666; }
-
-    /* LOADER */
-    .loading-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.98); display: none; justify-content: center; align-items: center; flex-direction: column; z-index: 100; text-align: center; }
-    .spinner { font-size: 50px; animation: pulse 1s infinite; margin-bottom: 20px; }
-    @keyframes pulse { 50% { opacity: 0.5; transform: scale(1.1); } }
-
-    /* RESULTS */
-    .result-view { display: none; }
-    .section-title { font-size: 12px; letter-spacing: 2px; color: #999; font-weight: 800; border-bottom: 2px solid #eee; padding-bottom: 5px; margin: 30px 0 15px 0; }
-    .chart-container { height: 300px; margin-bottom: 30px; }
-
-    /* PRODUCTS */
-    .stack-header { background: #f8f9fa; padding: 10px 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--secondary); font-weight: 700; color: var(--text); }
-    .product-card { padding: 15px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: flex-start; }
-    .product-info strong { color: var(--primary); display: block; font-size: 16px; margin-bottom: 4px; }
-    .product-hero { font-size: 13px; color: #1b5e20; font-style: italic; display: block; margin-bottom: 4px; }
-    .product-ing { font-size: 11px; color: #666; display: block; margin-bottom: 6px; }
-    .product-badge { font-size: 11px; background: #e0f2f1; color: #00695c; padding: 3px 8px; border-radius: 4px; font-weight: 700; display: inline-block; }
-    .product-price { font-weight: 800; font-size: 16px; }
-
-    /* LIFESTYLE CARDS (NEW) */
-    .life-card { background: #fffbe6; border: 1px solid #ffe58f; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-    .life-cat { font-size: 10px; font-weight: 800; color: #d48806; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; display: block; }
-    .life-title { font-weight: 700; color: #555; margin-bottom: 5px; display: block; }
-    .life-text { font-size: 13px; color: #666; line-height: 1.4; }
-
-    .total-bar { background: var(--text); color: white; padding: 20px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-top: 40px; }
-    .checkout-btn { background: var(--secondary); color: white; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; cursor: pointer; }
-  </style>
+  /* RICH CLINICAL CARDS */
+  .stack-section h3 { color: var(--primary); border-bottom: 2px solid #eee; padding-bottom: 5px; font-size: 14px; }
+  .supplement { background: var(--surface); border-left: 4px solid var(--primary); padding: 15px; margin-bottom: 10px; border-radius: 6px; box-shadow: 0 2px 5px rgba(0,0,0,0.03); }
+  .supp-top { display: flex; justify-content: space-between; align-items: center; }
+  .supp-name { font-weight: 700; font-size: 16px; color: var(--text); }
+  .supp-hero { display: block; font-size: 13px; color: #1b5e20; font-style: italic; margin-bottom: 4px; }
+  .supp-ing { display: block; font-size: 11px; color: #666; margin-bottom: 8px; }
+  .supp-dose { background: var(--accent); color: var(--primary); padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+  
+  /* LIFESTYLE CARDS */
+  .life-card { background: #fffbe6; border: 1px solid #ffe58f; padding: 12px; border-radius: 8px; margin-bottom: 10px; }
+  .life-cat { font-size: 10px; font-weight: 800; color: #d48806; text-transform: uppercase; }
+  .life-title { display: block; font-weight: 700; color: #555; margin: 3px 0; }
+  .life-text { font-size: 13px; color: #666; }
+</style>
 </head>
 <body>
 
 <div class="container">
-  <div class="header">
-    <h1 class="logo">PHYTOMEDIX</h1>
-    <span class="badge">Engine v17.0</span>
+  
+  <div class="card input-card" id="inputForm">
+    <h2>🧬 Twin Calibration</h2>
+    <div class="form-group"><input type="text" id="email" placeholder="Email Address (Required)"></div>
+    <div class="form-group"><input type="number" id="age" placeholder="Chronological Age" value="35"></div>
+    <div class="form-group">
+      <label><input type="checkbox" id="sym_diabetes"> Diabetes / High Sugar</label><br>
+      <label><input type="checkbox" id="sym_bp"> Hypertension</label><br>
+      <label><input type="checkbox" id="sym_carb"> High Carb Diet</label>
+    </div>
+    <button class="btn" onclick="runEngine()">Generate Protocol</button>
   </div>
 
-  <div class="card">
-    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+  <div class="dashboard" id="dashboard">
+    <div class="coach-msg" id="disp_coach"></div>
 
-    <form id="clinical-form">
-      <div id="wizard-content"></div>
-      <div class="btn-group">
-        <button type="button" class="btn btn-back" id="prevBtn" onclick="nextPrev(-1)" disabled>Back</button>
-        <button type="button" class="btn btn-next" id="nextBtn" onclick="nextPrev(1)">Next Step</button>
+    <div class="status-grid">
+      <div class="stat-card">
+        <div class="stat-label">Risk Load</div>
+        <div class="stat-value" id="disp_score">--</div>
       </div>
-    </form>
-
-    <div class="loading-overlay" id="loader">
-      <div class="spinner">🧬</div>
-      <div class="loading-text" id="loadingText">Calibrating Digital Twin...</div>
-      <div class="loading-sub">Accessing Clinical Logic Engine v17.0</div>
+      <div class="stat-card">
+        <div class="stat-label">Bio Age</div>
+        <div class="stat-value" id="disp_bioage">--</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Status</div>
+        <div class="stat-value" id="disp_lifecycle" style="font-size:16px; line-height:30px;">--</div>
+      </div>
     </div>
 
-    <div id="result-view" class="result-view">
-      <div style="text-align:center; margin-bottom:30px;">
-        <h2 style="color:var(--primary); margin:0;">Analysis Complete</h2>
-        <p style="color:#666;">Your Holistic Digital Protocol</p>
-      </div>
-
-      <div class="section-title">SYSTEMIC HEALTH SCORE</div>
-      <div class="chart-container"><canvas id="twinChart"></canvas></div>
-
-      <div class="section-title">PRECISION SUPPLEMENTS</div>
-      <div class="stack-container">
-        <div class="stack-header">☀️ Morning Fuel (AM)</div>
-        <div id="am-stack-list"></div>
-      </div>
-      <div class="stack-container">
-        <div class="stack-header">🌙 Evening Restoration (PM)</div>
-        <div id="pm-stack-list"></div>
-      </div>
-
-      <div class="section-title">LIFESTYLE INTERVENTIONS</div>
-      <div id="lifestyle-list"></div>
-
-      <div class="total-bar">
-        <div>
-          <div style="font-size:12px; opacity:0.8;">MONTHLY TOTAL</div>
-          <div style="font-size:24px; font-weight:700;" id="total-price">$0.00</div>
-        </div>
-        <button class="checkout-btn" onclick="alert('Proceeding to Secure Checkout...')">Subscribe & Save</button>
-      </div>
-      <button onclick="location.reload()" style="width:100%; padding:15px; margin-top:20px; background:none; border:1px solid #eee; color:#999; border-radius:8px; cursor:pointer;">Restart Assessment</button>
+    <div class="card">
+      <canvas id="twinRadar"></canvas>
     </div>
+
+    <div class="stack-section">
+      <h3>☀️ Morning Stack (Metabolic)</h3>
+      <div id="am_list"></div>
+    </div>
+
+    <div class="stack-section">
+      <h3>🌙 Evening Stack (Restoration)</h3>
+      <div id="pm_list"></div>
+    </div>
+
+    <div class="stack-section">
+      <h3>🥗 Lifestyle Engine</h3>
+      <div id="life_list"></div>
+    </div>
+    
+    <button class="btn" onclick="location.reload()" style="background:#eee; color:#555;">Reset</button>
   </div>
 </div>
 
 <script>
-  // ✅ Updated Apps Script Endpoint
-  const ENDPOINT_URL =
-    "https://script.google.com/macros/s/AKfycbxTC36j5S1pbdV-xqOFcXeGiC6TaOmnATq9_Ws011ryNu07RMgpY_ezHYJ0TJw6QDZp/exec";
+// ⚠️ REPLACE THIS URL ⚠️
+const API_URL = "YOUR_APPS_SCRIPT_WEB_APP_URL"; 
 
-  // --- SUBMISSION ---
-  async function submitForm() {
-    document.getElementById("loader").style.display = "flex";
+async function runEngine() {
+  const btn = document.querySelector(".btn");
+  btn.innerText = "Processing...";
+  
+  const q10 = [];
+  if(document.getElementById("sym_diabetes").checked) q10.push("diabetes");
+  if(document.getElementById("sym_bp").checked) q10.push("hypertension");
 
-    const formData = new FormData(document.getElementById("clinical-form"));
-    let data = Object.fromEntries(formData.entries());
+  const payload = {
+    email: document.getElementById("email").value,
+    age: document.getElementById("age").value,
+    "Q-010": q10.join("; "),
+    "Q-006": document.getElementById("sym_carb").checked ? "High carb" : "Balanced"
+  };
 
-    // Fix Multi-Select Q-010
-    const checked = Array.from(
-      document.querySelectorAll('input[name="Q-010"]:checked')
-    ).map((c) => c.value);
+  try {
+    const res = await fetch(API_URL, { method: "POST", body: JSON.stringify(payload) });
+    const data = await res.json();
+    if(data.status === "success") renderDashboard(data.output);
+    else alert("Error: " + data.message);
+  } catch(e) { alert("Network Error: " + e); }
+}
 
-    data["Q-010"] = checked.join("; ");
+function renderDashboard(twin) {
+  document.getElementById("inputForm").style.display = "none";
+  document.getElementById("dashboard").style.display = "block";
 
-    try {
-      // ✅ Proper JSON POST Request
-      const response = await fetch(ENDPOINT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      });
+  document.getElementById("disp_score").innerText = twin.overallScore;
+  document.getElementById("disp_bioage").innerText = twin.biologicalAge;
+  document.getElementById("disp_lifecycle").innerText = twin.lifecycle;
+  document.getElementById("disp_coach").innerText = twin.coachMessage;
 
-      const result = await response.json();
-
-      document.getElementById("loader").style.display = "none";
-      document.getElementById("clinical-form").style.display = "none";
-      document.getElementById("result-view").style.display = "block";
-
-      // ✅ Render Real Backend Output
-      renderResults(result.output);
-
-    } catch (err) {
-      alert("Submission Error: " + err);
-    }
-  }
-
-  // --- RENDER RESULTS FROM BACKEND ---
-  function renderResults(output) {
-    const scores = output.scores;
-    const protocol = output.protocol;
-
-    // --- Radar Chart ---
-    new Chart(document.getElementById("twinChart"), {
-      type: "radar",
-      data: {
-        labels: ["Metabolic", "Cardio", "Cognitive", "Joints", "Gut", "Hormonal"],
-        datasets: [
-          {
-            label: "Health Score",
-            data: Object.values(scores),
-            borderWidth: 2
-          }
-        ]
-      },
-      options: {
-        plugins: { legend: { display: false } },
-        scales: { r: { suggestedMin: 0, suggestedMax: 100 } }
-      }
-    });
-
-    // --- Supplement Rendering ---
-    function renderSupplements(list, targetId) {
-      let html = "";
-      let total = 0;
-
-      list.forEach((p) => {
-        total += p.price;
-
-        html += `
-          <div class="product-card">
-            <div class="product-info">
-              <strong>${p.name}</strong>
-              <span class="product-hero">${p.hero}</span>
-              <span class="product-ing">${p.ingredients}</span>
-
-              <div class="product-badge">Dose: ${p.dose}</div>
-
-              <!-- ✅ Premium Clinical Expand -->
-              <details style="margin-top:8px;">
-                <summary style="cursor:pointer; font-weight:600; color:#1b5e20;">
-                  Why this supplement?
-                </summary>
-
-                <p><b>Rationale:</b> ${p.why}</p>
-                <p><b>Safety Notes:</b> ${p.safety_notes}</p>
-                <p><b>Contraindications:</b> ${p.contraindications}</p>
-                <p><b>Interactions:</b> ${p.interactions}</p>
-              </details>
+  const renderStack = (list, elId) => {
+    const el = document.getElementById(elId);
+    el.innerHTML = "";
+    list.forEach(item => {
+      el.innerHTML += `
+        <div class="supplement">
+          <div class="product-info">
+            <div class="supp-top">
+              <span class="supp-name">${item.name}</span>
+              <span class="supp-dose">${item.dose}</span>
             </div>
-
-            <div class="product-price">$${p.price}</div>
+            <span class="supp-hero">${item.hero || ""}</span>
+            <span class="supp-ing">${item.ingredients || ""}</span>
+            
+            <details style="margin-top:8px;">
+              <summary style="cursor:pointer; font-size:12px; color:#1b5e20;">Why this?</summary>
+              <p style="font-size:12px; margin:5px 0;"><b>Rationale:</b> ${item.why}</p>
+              <p style="font-size:12px; margin:5px 0;"><b>Safety:</b> ${item.safety}</p>
+            </details>
           </div>
-        `;
-      });
+        </div>`;
+    });
+  };
 
-      document.getElementById(targetId).innerHTML =
-        html || "<i>No supplements recommended.</i>";
-
-      return total;
-    }
-
-    // --- Render AM + PM ---
-    let totalPrice = 0;
-    totalPrice += renderSupplements(protocol.supplements.AM, "am-stack-list");
-    totalPrice += renderSupplements(protocol.supplements.PM, "pm-stack-list");
-
-    document.getElementById("total-price").innerText =
-      "$" + totalPrice.toFixed(2);
-
-    // --- Lifestyle Rendering ---
-    let lifestyleHTML = "";
-    protocol.lifestyle.forEach((l) => {
-      lifestyleHTML += `
+  const renderLife = (list, elId) => {
+    const el = document.getElementById(elId);
+    el.innerHTML = "";
+    list.forEach(l => {
+      el.innerHTML += `
         <div class="life-card">
           <span class="life-cat">${l.category}</span>
           <span class="life-title">${l.title}</span>
           <div class="life-text">${l.text}</div>
-        </div>
-      `;
+        </div>`;
     });
+  };
 
-    document.getElementById("lifestyle-list").innerHTML = lifestyleHTML;
-  }
+  renderStack(twin.protocol.AM, "am_list");
+  renderStack(twin.protocol.PM, "pm_list");
+  renderLife(twin.lifestyle, "life_list");
+
+  new Chart(document.getElementById("twinRadar"), {
+    type: 'radar',
+    data: {
+      labels: ['Metabolic', 'Cardio', 'Cognitive', 'Joints', 'Gut', 'Hormonal'],
+      datasets: [{
+        label: 'Current Load',
+        data: [twin.scores.metabolic, twin.scores.cardio, 50, 50, 50, 50],
+        backgroundColor: 'rgba(27, 94, 32, 0.2)',
+        borderColor: '#1b5e20',
+        borderWidth: 2
+      }]
+    },
+    options: { scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { display: false } } }
+  });
+}
 </script>
-
-
 </body>
 </html>
