@@ -845,6 +845,11 @@ function showMainApp() {
   document.getElementById('sessionIndicator').className   = 'session-indicator active';
   var u=Session.get().userId||'';
   var cd=document.getElementById('ci_user_display'); if(cd) cd.textContent=u;
+    document.getElementById('dashboard').style.display      = 'none';
+  document.getElementById('formCard').style.display       = 'block';
+  document.getElementById('loadingOverlay').style.display = 'none';
+  currentPhase = 1;
+  if (typeof goPhase === 'function') goPhase(1);
   startSessionWatcher();
 }
 
