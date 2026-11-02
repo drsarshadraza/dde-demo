@@ -470,9 +470,10 @@ details[open].clinical-details summary::before{transform:rotate(90deg);}
 <!-- MAIN APP -->
 <div class="container" id="mainApp" style="display:none;">
   <div class="session-warning" id="sessionWarning">⏱ Your session expires in 5 minutes. <a href="#" onclick="handleLogout();return false;">Sign out now</a>.</div>
-  <div class="tab-bar" id="tabBar">
-    <button class="tab-btn active" id="tab_assess" onclick="switchTab('assess')"><span class="tab-icon">🧬</span> Full Assessment</button>
-    <button class="tab-btn" id="tab_checkin" onclick="switchTab('checkin')"><span class="tab-icon">🔄</span> Micro Check-in</button>
+    <div class="tab-bar" id="tabBar">
+    <button class="tab-btn active" id="tab_assess" onclick="switchTab('assess')"><span class="tab-icon">🧬</span> Assessment</button>
+    <button class="tab-btn" id="tab_checkin" onclick="switchTab('checkin')"><span class="tab-icon">🔄</span> Check-in</button>
+    <button class="tab-btn" id="tab_labs" onclick="switchTab('labs')"><span class="tab-icon">🧪</span> Labs</button>
   </div>
 
   <!-- ASSESSMENT TAB -->
