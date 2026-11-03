@@ -1411,6 +1411,79 @@ function afterRegSuccess(){
   document.getElementById('regSuccessScreen').style.display='none';
   document.getElementById('loginScreen').style.display='block';
   var e=document.getElementById('loginError'); if(e){ e.textContent='✓ Account created! Sign in with your email and PIN.'; e.style.cssText='display:block;background:#f0fdf4;border-color:#bbf7d0;color:#166534;'; }
+}// ════════════════════════════════════════════════════════════
+// LAB UPLOAD
+// ════════════════════════════════════════════════════════════
+function uploadLabReport() {
+  if(!Session.isValid()){ showLoginScreen('Session expired.'); return; }
+  var fileInput = document.getElementById('lab_file_input');
+  if (!fileInput.files.length) { alert("Please select a PDF or image file first."); return; }
+  
+  var file = fileInput.files[0];
+  if (file.size > 10 * 1024 * 1024) { alert("File is too large. Please upload a file under 10MB."); return; }
+
+  var btn = document.getElementById('uploadLabBtn');
+  var loader = document.getElementById('lab_loading');
+  var resultsDiv = document.getElementById('lab_results');
+
+  btn.style.display = 'none';
+  loader.style.display = 'block';
+  resultsDiv.style.display = 'none';
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var base64Data = e.target.result.split(',')[1];
+    
+    var payload = {
+      email: Session.get().userId,
+      fileData: base64Data,
+      mimeType: file.type
+    };
+
+    callAPI('upload_and_extract_labs', payload, 60000)
+    .then(function(data) {
+      btn.style.display = 'block';
+      loader.style.display = 'none';
+      
+      if (data.status === 'success') {
+        renderLabInsights(data);
+        fileInput.value = '';
+      } else {
+        alert(data.message || "Failed to extract data. Please ensure the image is clear.");
+      }
+    })
+    .catch(function(err) {
+      btn.style.display = 'block';
+      loader.style.display = 'none';
+      alert("Network error. Please try again.");
+    });
+  };
+  
+  reader.readAsDataURL(file);
+}
+
+function renderLabInsights(data) {
+  var resultsDiv = document.getElementById('lab_results');
+  var insightsList = document.getElementById('lab_insights_list');
+  var flagsList = document.getElementById('lab_flags_list');
+  
+  resultsDiv.style.display = 'block';
+  
+  if (data.insights && data.insights.length > 0) {
+    insightsList.innerHTML = data.insights.map(function(text) {
+      return '<div class="narrative-card" style="margin-bottom:10px;"><div class="narrative-main">💡 ' + esc(text) + '</div></div>';
+    }).join('');
+  } else {
+    insightsList.innerHTML = '<p style="font-size:13px;color:var(--slate);">No specific sub-optimal markers detected.</p>';
+  }
+
+  if (data.clinical_flags && data.clinical_flags.length > 0) {
+    flagsList.innerHTML = data.clinical_flags.map(function(flag) {
+      return '<div class="pae-urgent" style="margin-bottom:10px; padding:15px;">' +
+             '<div class="pae-urgent-title" style="font-size:15px;">⚠️ Clinical Flag: ' + esc(flag.domain) + '</div>' +
+             '<div class="pae-urgent-msg" style="font-size:13px;">' + esc(flag.reason) + '</div></div>';
+    }).join('');
+  }
 }
 </script>
 </body>
