@@ -1414,38 +1414,84 @@ function afterRegSuccess(){
 }// ════════════════════════════════════════════════════════════
 // LAB UPLOAD
 // ════════════════════════════════════════════════════════════
-function uploadLabReport() {
+async function uploadLabReport() {
   if(!Session.isValid()){ showLoginScreen('Session expired.'); return; }
   var fileInput = document.getElementById('lab_file_input');
-  if (!fileInput.files.length) { alert("Please select a PDF or image file first."); return; }
+  if (!fileInput.files.length) { alert("Please select at least one PDF or image file."); return; }
   
-  var file = fileInput.files[0];
-  if (file.size > 10 * 1024 * 1024) { alert("File is too large. Please upload a file under 10MB."); return; }
-
+  var files = Array.from(fileInput.files);
   var btn = document.getElementById('uploadLabBtn');
   var loader = document.getElementById('lab_loading');
+  var loadingStage = loader.querySelector('.loading-stage');
   var resultsDiv = document.getElementById('lab_results');
-
+  
+  // Reset UI
   btn.style.display = 'none';
   loader.style.display = 'block';
   resultsDiv.style.display = 'none';
+  
+  // Clear previous results
+  document.getElementById('lab_insights_list').innerHTML = '';
+  document.getElementById('lab_flags_list').innerHTML = '';
 
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var base64Data = e.target.result.split(',')[1];
+  var allInsights = [];
+  var allFlags = [];
+  var allExtractedData = {};
+
+  for (var i = 0; i < files.length; i++) {
+    var file = files[i];
     
-    var payload = {
-      email: Session.get().userId,
-      fileData: base64Data,
-      mimeType: file.type
-    };
+    // Update loading text
+    loadingStage.textContent = "Reading file " + (i + 1) + " of " + files.length + ": " + file.name + "...";
+    
+    // Check file size
+    if (file.size > 10 * 1024 * 1024) { 
+      alert("Skipping " + file.name + " — file is over 10MB."); 
+      continue; 
+    }
 
-    callAPI('upload_and_extract_labs', payload, 60000)
-    .then(function(data) {
-      btn.style.display = 'block';
-      loader.style.display = 'none';
-      
+    // Read the file as Base64
+    var base64Data = await new Promise((resolve, reject) => {
+      var reader = new FileReader();
+      reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+      reader.onerror = function(e) { reject(e); };
+      reader.readAsDataURL(file);
+    });
+
+    loadingStage.textContent = "AI is analyzing " + file.name + "...";
+
+    // Send to backend
+    try {
+      var data = await callAPI('upload_and_extract_labs', {
+        email: Session.get().userId,
+        fileData: base64Data,
+        mimeType: file.type
+      }, 60000);
+
       if (data.status === 'success') {
+        if (data.insights) allInsights = allInsights.concat(data.insights);
+        if (data.clinical_flags) allFlags = allFlags.concat(data.clinical_flags);
+        if (data.extracted_data) allExtractedData = Object.assign(allExtractedData, data.extracted_data);
+      } else {
+        console.warn("Failed to process " + file.name, data.message);
+      }
+    } catch (err) {
+      console.error("Network error on " + file.name, err);
+    }
+  }
+
+  // Restore UI
+  btn.style.display = 'block';
+  loader.style.display = 'none';
+  fileInput.value = ''; // clear input
+  
+  // Render the combined results of all files
+  renderLabInsights({
+    insights: allInsights,
+    clinical_flags: allFlags,
+    extracted_data: allExtractedData
+  });
+} {
         renderLabInsights(data);
         fileInput.value = '';
       } else {
