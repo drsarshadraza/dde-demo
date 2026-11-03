@@ -801,7 +801,7 @@ details[open].clinical-details summary::before{transform:rotate(90deg);}
       
       <div style="border:2px dashed var(--border); border-radius:12px; padding:30px 20px; text-align:center; margin-bottom:20px; background:var(--mist);">
         <div style="font-size:32px; margin-bottom:10px;">📄</div>
-        <input type="file" id="lab_file_input" accept="application/pdf, image/*" style="margin-bottom:15px; font-family:'Outfit',sans-serif;">
+        <input type="file" id="lab_file_input" accept="application/pdf, image/*" multiple style="margin-bottom:15px; font-family:'Outfit',sans-serif;">
         <br>
         <button class="cta-btn" id="uploadLabBtn" onclick="uploadLabReport()" style="max-width:250px; margin:0 auto;">Extract Lab Data ✨</button>
       </div>
@@ -1412,7 +1412,7 @@ function afterRegSuccess(){
   document.getElementById('loginScreen').style.display='block';
   var e=document.getElementById('loginError'); if(e){ e.textContent='✓ Account created! Sign in with your email and PIN.'; e.style.cssText='display:block;background:#f0fdf4;border-color:#bbf7d0;color:#166534;'; }
 }// ════════════════════════════════════════════════════════════
-// LAB UPLOAD
+// LAB UPLOAD (MULTIPLE FILES)
 // ════════════════════════════════════════════════════════════
 async function uploadLabReport() {
   if(!Session.isValid()){ showLoginScreen('Session expired.'); return; }
@@ -1491,21 +1491,6 @@ async function uploadLabReport() {
     clinical_flags: allFlags,
     extracted_data: allExtractedData
   });
-} {
-        renderLabInsights(data);
-        fileInput.value = '';
-      } else {
-        alert(data.message || "Failed to extract data. Please ensure the image is clear.");
-      }
-    })
-    .catch(function(err) {
-      btn.style.display = 'block';
-      loader.style.display = 'none';
-      alert("Network error. Please try again.");
-    });
-  };
-  
-  reader.readAsDataURL(file);
 }
 
 function renderLabInsights(data) {
@@ -1515,14 +1500,29 @@ function renderLabInsights(data) {
   
   resultsDiv.style.display = 'block';
   
+  // 1. Show the RAW extracted data so you can verify Gemini read it right
+  var rawHtml = '<div style="background:var(--mist); border:1px solid var(--border); padding:12px; border-radius:8px; margin-bottom:15px; font-family:\'DM Mono\', monospace; font-size:12px;">';
+  rawHtml += '<strong>Raw AI Extraction:</strong><br>';
+  if (data.extracted_data && Object.keys(data.extracted_data).length > 0) {
+    for (var key in data.extracted_data) {
+      rawHtml += '• ' + key + ': ' + data.extracted_data[key] + '<br>';
+    }
+  } else {
+    rawHtml += 'No data extracted.';
+  }
+  rawHtml += '</div>';
+  insightsList.innerHTML = rawHtml;
+
+  // 2. Show Insights
   if (data.insights && data.insights.length > 0) {
-    insightsList.innerHTML = data.insights.map(function(text) {
+    insightsList.innerHTML += data.insights.map(function(text) {
       return '<div class="narrative-card" style="margin-bottom:10px;"><div class="narrative-main">💡 ' + esc(text) + '</div></div>';
     }).join('');
   } else {
-    insightsList.innerHTML = '<p style="font-size:13px;color:var(--slate);">No specific sub-optimal markers detected.</p>';
+    insightsList.innerHTML += '<p style="font-size:13px;color:var(--slate);font-style:italic;">✅ All extracted markers are within optimal ranges.</p>';
   }
 
+  // 3. Show Critical Flags
   if (data.clinical_flags && data.clinical_flags.length > 0) {
     flagsList.innerHTML = data.clinical_flags.map(function(flag) {
       return '<div class="pae-urgent" style="margin-bottom:10px; padding:15px;">' +
