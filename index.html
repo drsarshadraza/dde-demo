@@ -793,6 +793,32 @@ details[open].clinical-details summary::before{transform:rotate(90deg);}
       <div id="ci_result" style="display:none;margin-top:14px;" class="card"><div class="card-title">Twin Recalibrated</div><div id="ci_result_body" style="font-size:13px;line-height:1.7;color:var(--ink);"></div></div>
     </div>
   </div>
+    <!-- LAB UPLOAD TAB -->
+  <div id="labsTab" style="display:none;">
+    <div class="card">
+      <h2 style="font-family:'Syne',sans-serif;font-size:21px;font-weight:800;color:var(--forest);margin-bottom:5px;">Lab Report Extraction</h2>
+      <p style="font-size:13px;color:var(--slate);margin-bottom:18px;">Upload your blood test results (PDF or Image). Our AI will extract the biomarkers and cross-reference them with your Bio-OS clinical context.</p>
+      
+      <div style="border:2px dashed var(--border); border-radius:12px; padding:30px 20px; text-align:center; margin-bottom:20px; background:var(--mist);">
+        <div style="font-size:32px; margin-bottom:10px;">📄</div>
+        <input type="file" id="lab_file_input" accept="application/pdf, image/*" style="margin-bottom:15px; font-family:'Outfit',sans-serif;">
+        <br>
+        <button class="cta-btn" id="uploadLabBtn" onclick="uploadLabReport()" style="max-width:250px; margin:0 auto;">Extract Lab Data ✨</button>
+      </div>
+
+      <div id="lab_loading" style="display:none; text-align:center; padding:20px 0;">
+        <div class="spinner-dna" style="font-size:36px;">🤖</div>
+        <div class="loading-stage">Gemini AI is reading your report...</div>
+        <div class="loading-sub">This usually takes 5–10 seconds.</div>
+      </div>
+
+      <div id="lab_results" style="display:none;">
+        <div class="card-title">Clinical Insights</div>
+        <div id="lab_insights_list" style="margin-bottom:20px;"></div>
+        <div id="lab_flags_list"></div>
+      </div>
+    </div>
+  </div>
 </div><!-- /mainApp -->
 
 <script>
