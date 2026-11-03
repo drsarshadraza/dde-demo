@@ -992,8 +992,10 @@ function initSelectedTiles(){
 function switchTab(t){
   document.getElementById('assessTab').style.display  = t==='assess' ?'block':'none';
   document.getElementById('checkinTab').style.display = t==='checkin'?'block':'none';
+  document.getElementById('labsTab').style.display    = t==='labs'   ?'block':'none';
   document.getElementById('tab_assess').classList.toggle('active',  t==='assess');
   document.getElementById('tab_checkin').classList.toggle('active', t==='checkin');
+  document.getElementById('tab_labs').classList.toggle('active',    t==='labs');
 }
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function toggleMedEntry(show){
