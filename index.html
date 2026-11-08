@@ -1615,6 +1615,7 @@ function renderLabResults(results) {
       return;
     }
     var d = r.data, vals = d.extracted_data || {}, keys = Object.keys(vals);
+        console.log("DEBUG BACKEND DATA:", JSON.stringify(r.data));
     html += '<div class="file-result"><div class="file-result-name">' + esc(r.name) + '</div>';
     html += '<div class="notice warn">Read by AI. Please check these values against your original report.</div>';
     if (d.clinician_referral_triggered) html += '<div class="notice alert"><strong>A value may be critically out of range.</strong> Check it against your report and contact your doctor promptly if it is confirmed. Do not change any medication on this basis.</div>';
