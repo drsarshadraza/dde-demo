@@ -1582,23 +1582,29 @@ async function uploadLabReport() {
     if (LAB_TYPES.indexOf(f.type) === -1) { results.push({ name: f.name, ok: false, message: 'Unsupported file type. Use PDF, JPG, PNG or WebP.' }); continue; }
     if (f.size > LAB_MAX_BYTES) { results.push({ name: f.name, ok: false, message: 'File is larger than 7 MB.' }); continue; }
     try {
-           var b64 = await readFileAsBase64(f);
-      var data = await callAPI('upload_and_extract_labs', { fileData: b64, mimeType: f.type }, 70000);
+            try {
+      var b64 = await readFileAsBase64(f);
+      var s = Session.get();
       
-      // The API wrapper might return the data directly or nested inside 'output'
-      var resultData = (data && data.output) ? data.output : data;
-      
-      if (resultData && resultData.extracted_data) {
-        results.push({ name: f.name, ok: true, data: resultData });
-      } else if (data && data.status === 'success') {
-        results.push({ name: f.name, ok: true, data: data });
+      // Bypass callAPI for labs to prevent frontend crashes on complex AI data
+      var rawRes = await postToGAS({
+        action: 'upload_and_extract_labs',
+        user_id: s.userId,
+        token: s.token,
+        fileData: b64,
+        mimeType: f.type
+      }, 70000);
+
+      if (rawRes && (rawRes.status === 'success' || rawRes.status === 'ok')) {
+        results.push({ name: f.name, ok: true, data: rawRes });
       } else {
-        results.push({ name: f.name, ok: false, message: (data && data.message) ? String(data.message) : 'We could not read this report.' });
+        results.push({ name: f.name, ok: false, message: (rawRes && rawRes.message) ? rawRes.message : (rawRes && rawRes.code) ? rawRes.code : 'Failed to read.' });
       }
     } catch (err) {
       if (err === 'session_expired') { btn.style.display = 'block'; show('lab_loading', false); return; }
-      results.push({ name: f.name, ok: false, message: labErrorText(err) });
+      results.push({ name: f.name, ok: false, message: typeof err === 'string' ? err : 'Network error.' });
       if (err === 'rate_limited') break;
+    }
     }
   }
   btn.style.display = 'block'; show('lab_loading', false);
