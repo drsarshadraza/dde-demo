@@ -1613,32 +1613,72 @@ async function uploadLabReport() {
 }
 
 function renderLabResults(results) {
-  var box = $('lab_results'); box.style.display = 'block';
+  var box = $('lab_results');
+  if (!box) return;
+  box.style.display = 'block';
   var html = '';
-  results.forEach(function (r) {
-    if (!r.ok) {
-      html += '<div class="file-result failed"><div class="file-result-name">' + esc(r.name || 'Upload') + '</div><div class="notice alert" style="margin:0;">' + esc(r.message) + '</div></div>';
+
+  // Ensure results is an array (in case a single object was passed)
+  var resArray = Array.isArray(results) ? results : [results];
+
+  resArray.forEach(function (r) {
+    if (!r) return;
+    
+    // Handle error states returned in the results wrapper
+    if (r.ok === false) {
+      html += '<div class="file-result failed"><div class="file-result-name">' + esc(r.name || 'Upload') + '</div><div class="notice alert" style="margin:0;">' + esc(r.message || 'Unknown error') + '</div></div>';
       return;
     }
-    var d = r.data, vals = d.extracted_data || {}, keys = Object.keys(vals);
-        console.log("DEBUG BACKEND DATA:", JSON.stringify(r.data));
-    html += '<div class="file-result"><div class="file-result-name">' + esc(r.name) + '</div>';
+
+    // Handle direct API response or wrapped result object
+    var d = r.data || r;
+    var vals = (d && typeof d.extracted_data === 'object' && d.extracted_data !== null) ? d.extracted_data : {};
+    var keys = Object.keys(vals);
+    
+    var fileName = r.name || 'Lab Report';
+    html += '<div class="file-result"><div class="file-result-name">' + esc(fileName) + '</div>';
     html += '<div class="notice warn">Read by AI. Please check these values against your original report.</div>';
-    if (d.clinician_referral_triggered) html += '<div class="notice alert"><strong>A value may be critically out of range.</strong> Check it against your report and contact your doctor promptly if it is confirmed. Do not change any medication on this basis.</div>';
-    if (keys.length) {
+    
+    if (d.clinician_referral_triggered) {
+      html += '<div class="notice alert"><strong>A value may be critically out of range.</strong> Check it against your report and contact your doctor promptly if confirmed. Do not change any medication on this basis.</div>';
+    }
+
+    if (keys.length > 0) {
       html += '<div class="table-scroll"><table class="data-table"><thead><tr><th>Biomarker</th><th>Value read</th></tr></thead><tbody>';
-      keys.forEach(function (k) { html += '<tr><td>' + esc(k) + '</td><td>' + esc(vals[k]) + '</td></tr>'; });
+      keys.forEach(function (k) { 
+        html += '<tr><td>' + esc(k) + '</td><td>' + esc(vals[k]) + '</td></tr>'; 
+      });
       html += '</tbody></table></div>';
-    } else html += '<div class="notice">No values could be read from this file.</div>';
-    var compared = parseInt(d.evaluated_count) || 0, notEval = d.not_evaluated || [];
+    } else {
+      html += '<div class="notice">No values could be read from this file.</div>';
+    }
+
+    var compared = parseInt(d.evaluated_count) || 0;
+    var notEval = Array.isArray(d.not_evaluated) ? d.not_evaluated : [];
+    
     html += '<div class="field-hint" style="margin:10px 0;">' + compared + ' value' + (compared === 1 ? '' : 's') + ' compared with our reference ranges' + (notEval.length ? '; ' + notEval.length + ' not compared (no range held): ' + esc(notEval.join(', ')) : '') + '.</div>';
-    var insights = d.insights || [];
-    if (insights.length) insights.forEach(function (t) { html += '<div class="narrative-card" style="margin-bottom:8px;"><div class="narrative-main" style="margin:0;">💡 ' + esc(t) + '</div></div>'; });
-    else if (compared > 0) html += '<div class="notice info">No compared value was outside the ranges we hold. This is not a clean bill of health: values without a range were not checked.</div>';
-    else if (keys.length) html += '<div class="notice">None of the values could be compared with our reference ranges.</div>';
-    (d.clinical_flags || []).forEach(function (fl) { html += '<div class="pae-urgent" style="padding:14px;margin-bottom:8px;"><div class="pae-urgent-title" style="font-size:14px;">⚠️ Flag: ' + esc(fl.domain || 'general') + '</div><div class="pae-urgent-msg" style="font-size:12px;">' + esc(fl.reason) + '</div></div>'; });
+
+    var insights = Array.isArray(d.insights) ? d.insights : [];
+    if (insights.length > 0) {
+      insights.forEach(function (t) { 
+        html += '<div class="narrative-card" style="margin-bottom:8px;"><div class="narrative-main" style="margin:0;">💡 ' + esc(t) + '</div></div>'; 
+      });
+    } else if (compared > 0) {
+      html += '<div class="notice info">No compared value was outside the ranges we hold.</div>';
+    } else if (keys.length > 0) {
+      html += '<div class="notice">None of the values could be compared with our reference ranges.</div>';
+    }
+
+    var flags = Array.isArray(d.clinical_flags) ? d.clinical_flags : [];
+    flags.forEach(function (fl) { 
+      if (fl) {
+        html += '<div class="pae-urgent" style="padding:14px;margin-bottom:8px;"><div class="pae-urgent-title" style="font-size:14px;">⚠️ Flag: ' + esc(fl.domain || 'general') + '</div><div class="pae-urgent-msg" style="font-size:12px;">' + esc(fl.reason || '') + '</div></div>'; 
+      }
+    });
+    
     html += '</div>';
   });
+
   box.innerHTML = '<div class="card-title">Results</div>' + html;
   scrollToEl(box);
 }
