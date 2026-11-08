@@ -1031,7 +1031,7 @@ function callAPI(action, extra, ms) {
   return postToGAS(p, ms || 30000).then(function (d) {
     var code = d && d.code;
     if (code === 'SESSION_EXPIRED' || code === 'MISSING_TOKEN') { Session.clear(); showLoginScreen('Your session ended. Please sign in again.'); throw 'session_expired'; }
-    if (code === 'SERVICE_UNAVAILABLE') throw 'service_unavailable';
+   if (code === 'SERVICE_UNAVAILABLE') throw (d && d.message ? d.message : 'service_unavailable');
     if (code === 'RATE_LIMITED') throw 'rate_limited';
     if (code === 'BUSY') throw 'busy';
     if (code === 'FORBIDDEN') throw 'forbidden';
