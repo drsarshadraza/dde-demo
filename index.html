@@ -1581,12 +1581,10 @@ async function uploadLabReport() {
     setText('lab_loading_stage', 'Reading file ' + (i + 1) + ' of ' + files.length + '...');
     if (LAB_TYPES.indexOf(f.type) === -1) { results.push({ name: f.name, ok: false, message: 'Unsupported file type. Use PDF, JPG, PNG or WebP.' }); continue; }
     if (f.size > LAB_MAX_BYTES) { results.push({ name: f.name, ok: false, message: 'File is larger than 7 MB.' }); continue; }
-    try {
-            try {
+       try {
       var b64 = await readFileAsBase64(f);
       var s = Session.get();
       
-      // Bypass callAPI for labs to prevent frontend crashes on complex AI data
       var rawRes = await postToGAS({
         action: 'upload_and_extract_labs',
         user_id: s.userId,
@@ -1604,7 +1602,6 @@ async function uploadLabReport() {
       if (err === 'session_expired') { btn.style.display = 'block'; show('lab_loading', false); return; }
       results.push({ name: f.name, ok: false, message: typeof err === 'string' ? err : 'Network error.' });
       if (err === 'rate_limited') break;
-    }
     }
   }
   btn.style.display = 'block'; show('lab_loading', false);
